@@ -5,6 +5,7 @@ Created on Tue Jun 18 09:33:56 2019
 @author: tjtur
 
 List:
+    create_process_file_list
     latlon_from_radar
     calc_dlatlon_dt
     make_ticks
@@ -14,6 +15,55 @@ List:
     figure_timestamp
 
 """
+
+import math
+import os
+import pathlib
+from datetime import datetime,timezone
+import numpy as np
+import cartopy.crs as ccrs
+import cartopy.feature as cfeature
+from pyproj import Geod
+import cartopy.io.shapereader as shpreader
+from operator import itemgetter
+from itertools import groupby
+
+
+
+def create_process_file_list(src_dir,product_list,cut_list):
+    part_list = []
+    #Builds a sorted list of full file paths
+    file_list = [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(src_dir)) for f in fn]
+    for f in file_list:
+        p = pathlib.PurePath(f)
+        parts = p.parts
+        part_list.append(parts)
+    
+    sorted_path_list = []
+    part_list.sort(key=itemgetter(7))
+    y = groupby(part_list,itemgetter(6))
+    for y in part_list:
+        z = list(y)
+        this_one = "/".join(str(x) for x in z)
+        this_one = this_one[0:2] + this_one[3:]
+        sorted_path_list.append(this_one)
+
+
+    trimmed_path_list = []
+    for path in range(0,len(sorted_path_list)):
+        src_filepath = str(sorted_path_list[path])
+        #for product in product_list:
+
+        for cuts in cut_list:
+            if cuts in src_filepath:
+                for product in product_list:
+                    if product in src_filepath and 'Gradient' not in src_filepath:
+                        trimmed_path_list.append(sorted_path_list[path])
+                        #print(str(sorted_path_list[path]))
+    
+    return trimmed_path_list
+
+
 
 def latlon_from_radar(data):
     """
@@ -278,11 +328,3 @@ def figure_timestamp(dt):
     return fig_title_timestring,fig_filename_timestring
 
 
-import math
-import os
-from datetime import datetime,timezone
-import numpy as np
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-from pyproj import Geod
-import cartopy.io.shapereader as shpreader
