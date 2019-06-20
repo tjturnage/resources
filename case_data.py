@@ -148,6 +148,8 @@ cases['g'] = {'date':'20190601',
      'lonmax':-84.90,
      'latmax':42.62,
      'latmin':42.06,
+     'extent': [-85.61,-84.90,42.06,42.62],
+     'sat_extent' : [-86.4,-84.3,41.7,43.2],
      'eventloc': (-85,19,42.31),
      #'eventloc2': (-94.93,39.06),
      'cutlist': ['00.50']
@@ -179,5 +181,5 @@ cases['h'] = {'date':'20190601',
 #     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40']
 #     }
 
-this_case = cases['eek']
-
+#this_case = cases['eek']
+this_case = cases['g']
