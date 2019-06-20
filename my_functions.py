@@ -6,6 +6,7 @@ Created on Tue Jun 18 09:33:56 2019
 
 List:
     latlon_from_radar
+    calc_dlatlon_dt
     make_ticks
     calc_new_extent
     calc_srv
@@ -14,7 +15,7 @@ List:
 
 """
 
-def latlon_from_radar(az,elevation,num_gates,radar_lat,radar_lon):
+def latlon_from_radar(data):
     """
     Convert radar bin radial coordinates to lat/lon coordinates.
     Adapted from Brian Blaylock code
@@ -45,6 +46,12 @@ def latlon_from_radar(az,elevation,num_gates,radar_lat,radar_lon):
         back : I have no idea what this is for. I don't use it.
                     
     """
+    dnew2 = data.sortby('Azimuth')
+    azimuths = dnew2.Azimuth.values
+    radar_lat = dnew2.Latitude
+    radar_lon = dnew2.Longitude
+    elevation = data.Elevation
+    num_gates = len(dnew2.Gate)
     rng = None
     factor = math.cos(math.radians(elevation))
     if num_gates <= 334:
@@ -53,12 +60,58 @@ def latlon_from_radar(az,elevation,num_gates,radar_lat,radar_lon):
         gate_len = 250.0 * factor
     rng = np.arange(2125.0,(num_gates*gate_len + 2125.0),gate_len)
     g = Geod(ellps='clrk66')
-    center_lat = np.ones([len(az),len(rng)])*radar_lat
-    center_lon = np.ones([len(az),len(rng)])*radar_lon
-    az2D = np.ones_like(center_lat)*az[:,None]
+    center_lat = np.ones([len(azimuths),len(rng)])*radar_lat
+    center_lon = np.ones([len(azimuths),len(rng)])*radar_lon
+    az2D = np.ones_like(center_lat)*azimuths[:,None]
     rng2D = np.ones_like(center_lat)*np.transpose(rng[:,None])
     lat,lon,back=g.fwd(center_lon,center_lat,az2D,rng2D)
-    return lat,lon,back
+    return dnew2,lat,lon,back
+
+
+def calc_dlatlon_dt(starting_coords,starting_time,ending_coords,ending_time):
+    """
+    One-time calculation of changes in latitude and longitude with respect to time
+    to implement feature-following zoom. Radar plotting software should be used
+    beforehand to track a feature's lat/lon position at two different scan times
+    along with the two different scan times.
+    
+    This needs to be executed only once at the beginning since dlat_dt and dlon_dt should
+    remain constant.
+    
+    
+    Parameters
+    ----------
+    starting_coords : tuple containing two floats - (lat,lon)
+                      Established with radar plotting software to determine
+                      starting coordinates for the feature of interest.
+
+      starting_time : string
+                      format - 'yyyy-mm-dd HH:MM:SS' - example - '2018-06-01 22:15:55'
+
+      ending_coords : tuple containing two floats - (lat,lon)
+                      Established with radar plotting software to determine
+                      starting coordinates for the feature of interest.
+
+        ending_time : string
+                      format - 'yyyy-mm-dd HH:MM:SS' - example - '2018-06-01 23:10:05'
+                                          
+    Returns
+    -------
+            dlat_dt : float
+                      Feature's movement in degrees latitude per second
+            dlon_dt : float
+                      Feature's movement in degrees longitude per second
+                    
+    """ 
+    starting_datetime = datetime.strptime(starting_time, "%Y-%m-%d %H:%M:%S")
+    ending_datetime = datetime.strptime(ending_time, "%Y-%m-%d %H:%M:%S")
+    dt =  ending_datetime - starting_datetime
+    dt_seconds = dt.seconds
+    print('dt_seconds --------- ' + str(dt_seconds))
+    dlat_dt = (ending_coords[0] - starting_coords[0])/dt_seconds
+    dlon_dt = (ending_coords[1] - starting_coords[1])/dt_seconds
+
+    return dlat_dt, dlon_dt
 
 
 def make_ticks(this_min,this_max):
@@ -92,7 +145,6 @@ def make_ticks(this_min,this_max):
         else:
             pass
     return tick_arr
-
 
 def calc_new_extent(orig_t,orig_extent,t,lon_rate,lat_rate):
     """
@@ -217,7 +269,7 @@ def figure_timestamp(dt):
                     
     """    
     if type(dt) is not datetime:
-        t = datetime.fromtimestamp(int(dt), timezone.utc)
+        t = datetime.fromtimestamp(dt, timezone.utc)
     else:
         t = dt
 
