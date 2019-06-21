@@ -44,6 +44,9 @@ Last updated:
 ------------------------------------------------
 """
 
+#product_list = ['AzShear_Storm','DivShear_Storm','Velocity_Gradient_Storm','ReflectivityQC','Velocity',
+#                'SRV','SpectrumWidth']
+
 cases = {}
 cases['a'] = {'date':'20170919',
      'rda':'KMVX',
@@ -57,6 +60,7 @@ cases['a'] = {'date':'20170919',
      'end_latlon': (47.39,-96.65),
      'start_time': '2017-07-20 00:07:34',
      'end_time': '2017-07-20 00:18:01',
+     'storm_motion': (211,35),  
      'feature_follow': True,
      'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40']
      }
@@ -68,7 +72,10 @@ cases['b'] = {'date':'20180827',
      'latmin':46.750,
      'lonmin':-97.4,
      'lonmax':-95.5,
-     'eventloc': (-96.12,47.44)
+     'extent': [-97.4,-95.5,46.75,48.25],
+     'storm_motion': (250,55),    
+     'eventloc': (-96.12,47.44),
+     'cutlist': ['00.50', '00.90']
      }
 
 
@@ -86,7 +93,8 @@ cases['c'] = {'date':'20190519',
      'end_time': '2019-05-19 22:18:11',
      'storm_motion': (240,30),
      'feature_follow': True,
-     'cutlist': ['00.50']
+     'products': ['AzShear_Storm','DivShear_Storm'],
+     'cutlist': ['00.50', '00.90']
      }
 
 
@@ -97,7 +105,8 @@ cases['d'] = {'date':'20190527',
      'latmin':38.05,
      'latmax':39.0,     
      'eventloc': (-102.29,38.59),
-     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40']
+     'storm_motion': (200,49),
+     'cutlist': ['00.50']
      }
 
 cases['e'] = {'date':'20080608',
@@ -127,7 +136,7 @@ cases['eek'] = {'date':'20080608',
      'end_time': '2008-06-08 20:13:09',
      'storm_motion': (267,57),
      'feature_follow': True,
-     'cutlist': ['00.50']
+     'cutlist': ['00.50','00.90','01.30']
      }
 
 cases['f'] = {'date':'20190528',
@@ -182,4 +191,6 @@ cases['h'] = {'date':'20190601',
 #     }
 
 #this_case = cases['eek']
-this_case = cases['g']
+this_case = cases['b']
+this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
+#this_case['cutlist'] =  ['00.50']
