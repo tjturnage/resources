@@ -303,13 +303,6 @@ def calc_srv(da_v,storm_dir,storm_speed):
     return srv_arr
 
 
-def get_shapefile(shape_path):
-    reader = shpreader.Reader(shape_path)
-    features = list(reader.geometries())
-    SHAPEFILE = cfeature.ShapelyFeature(features, ccrs.PlateCarree())
-    return SHAPEFILE
-
-
 def figure_timestamp(dt):
     """
     Creates user-friendly time strings from Unix Epoch Time:
@@ -426,3 +419,37 @@ def build_html(image_dir):
     f.write(full_html)
     f.close()
     return
+
+"""
+
+        #azpos_tmp = da.to_masked_array(copy=True)  
+        #azpos_fill = azpos_tmp.filled()
+        #azpos_fill[azpos_fill<0] = 0
+        #azpos_lats = lats
+        #azpos_lons = lons
+        #arDict['AzShear_Pos'] = {'ar':azpos_fill,'lat':azpos_lats,'lon':azpos_lons}
+        #azposdone = True
+        
+        #dvneg_tmp = da.to_masked_array(copy=True)
+        #dvneg_fill = dvneg_tmp.filled()
+        #dvneg_fill[dvneg_fill<-1] = 0
+        #dvneg_fill[dvneg_fill>0] = 0
+        #dvnegdone = True
+        #dvneg_lats = lats
+        #dvneg_lons = lons
+        #arDict['DivShear_Neg'] = {'ar':dvneg_fill,'lat':dvneg_lats,'lon':dvneg_lons}
+        #dvnegdone = True
+
+        #csg_lats = lats
+        #csg_lons = lons
+            # Conv Shear Gradient equals square root of (negative_divshear**2 + positive_azshear**2)
+            #ar_sq = np.square(dv_fill) + np.square(az_fill)
+            #csg_sq = np.square(dvneg_fill) + np.square(azpos_fill)
+            #csg_arr = np.sqrt(csg_sq)
+            #arDict['Conv_Shear_Gradient'] = {'ar':csg_arr,'lat':csg_lats,'lon':csg_lons}
+            #csgdone = True        
+
+
+
+
+"""
