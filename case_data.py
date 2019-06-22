@@ -48,7 +48,7 @@ Last updated:
 #                'SRV','SpectrumWidth']
 
 cases = {}
-cases['a'] = {'date':'20170919',
+cases['20170919_KMVX'] = {'date':'20170919',
      'rda':'KMVX',
      'latmax':48.1,
      'latmin':46.05,
@@ -62,11 +62,12 @@ cases['a'] = {'date':'20170919',
      'end_time': '2017-07-20 00:18:01',
      'storm_motion': (211,35),  
      'feature_follow': True,
-     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40']
+     'cutlist': ['01.80','02.40'],
+     'shapelist':['MN','ND']
      }
 
 
-cases['b'] = {'date':'20180827',
+cases['20180827_KMVX'] = {'date':'20180827',
      'rda':'KMVX',
      'latmax':48.25,
      'latmin':46.750,
@@ -75,11 +76,12 @@ cases['b'] = {'date':'20180827',
      'extent': [-97.4,-95.5,46.75,48.25],
      'storm_motion': (250,55),    
      'eventloc': (-96.12,47.44),
-     'cutlist': ['00.50', '00.90']
+     'cutlist': ['00.50', '00.90', '01.30'],
+     'shapelist':['MN','ND']
      }
 
 
-cases['c'] = {'date':'20190519',
+cases['20190519_KGRR'] = {'date':'20190519',
      'rda':'KGRR',
      'lonmin':-85.72,
      'lonmax':-85.17,
@@ -94,11 +96,12 @@ cases['c'] = {'date':'20190519',
      'storm_motion': (240,30),
      'feature_follow': True,
      'products': ['AzShear_Storm','DivShear_Storm'],
-     'cutlist': ['00.50', '00.90']
+     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40'],
+     'shapelist':['MI']
      }
 
 
-cases['d'] = {'date':'20190527',
+cases['20190527_KGLD'] = {'date':'20190527',
      'rda':'KGLD',
      'lonmin':-103.00,
      'lonmax':-101.8,
@@ -106,10 +109,11 @@ cases['d'] = {'date':'20190527',
      'latmax':39.0,     
      'eventloc': (-102.29,38.59),
      'storm_motion': (200,49),
-     'cutlist': ['00.50']
+     'cutlist': ['00.50', '00.90'],
+     'shapelist':['CO','KS']     
      }
 
-cases['e'] = {'date':'20080608',
+cases['20080608_KGRR'] = {'date':'20080608',
      'rda':'KGRR',
      'lonmin':-87.45,
      'lonmax':-85.8,
@@ -121,10 +125,11 @@ cases['e'] = {'date':'20080608',
      'end_time': '2008-06-08 19:42:28',
      'storm_motion': (250,45),
      'feature_follow': True,
-     'cutlist': ['00.50']
+     'cutlist': ['00.50'],
+     'shapelist':['MI']
      }
 
-cases['eek'] = {'date':'20080608',
+cases['20080608_KDTX'] = {'date':'20080608',
      'rda':'KDTX',
      'lonmin':-85.22,  # 1.65 / 2 = 0.65
      'lonmax':-84.0,
@@ -136,22 +141,30 @@ cases['eek'] = {'date':'20080608',
      'end_time': '2008-06-08 20:13:09',
      'storm_motion': (267,57),
      'feature_follow': True,
-     'cutlist': ['00.50','00.90','01.30']
+     'cutlist': ['00.50','00.90','01.30'],
+     'shapelist':['MI']
      }
 
-cases['f'] = {'date':'20190528',
+cases['20190528_KTWX'] = {'date':'20190528',
      'rda':'KTWX',
      'lonmin':-96.26,
      'lonmax':-95.17,
      'latmax':39.15,
      'latmin':38.29,
+     'start_latlon': (38.845,-95.383),
+     'end_latlon': (38.877,-95.308),
+     'start_time': '2019-05-28 23:04:39',
+     'end_time': '2019-05-28 23:12:55',
      'eventloc': (-95.41,38.81),
      'eventloc2': (-94.93,39.06),
-     'cutlist': ['00.50']
+     'storm_motion': (240,31),
+     'feature_follow': True,
+     'cutlist': ['03.10','04.00'],
+     'shapelist':['KS','MO']
      }
 
 
-cases['g'] = {'date':'20190601',
+cases['20190601_KGRR'] = {'date':'20190601',
      'rda':'KGRR',
      'lonmin':-85.61,
      'lonmax':-84.90,
@@ -161,7 +174,8 @@ cases['g'] = {'date':'20190601',
      'sat_extent' : [-86.4,-84.3,41.7,43.2],
      'eventloc': (-85,19,42.31),
      #'eventloc2': (-94.93,39.06),
-     'cutlist': ['00.50']
+     'cutlist': ['00.90','01.80','2,40','08.00','10.00'],
+     'shapelist':['MI']
      }
 
 			
@@ -177,20 +191,7 @@ cases['h'] = {'date':'20190601',
      }
 
 
-#cases['f'] = {'date':'20190528',
-#     'rda':'KTWX',
-#     #'lonmin':-96.20,
-#     'lonmin':-96.26,
-#     #'lonmax':-94.45,
-#     'lonmax':-95.11,
-#     'latmax':39.8,
-#     'latmin':38.40,
-#     'eventloc': (-95.41,38.81),
-#     'eventloc2': (-94.93,39.06),
-#     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40']
-#     }
-
 #this_case = cases['eek']
-this_case = cases['b']
+this_case = cases['20190601_KGRR']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
 #this_case['cutlist'] =  ['00.50']
