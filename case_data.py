@@ -101,6 +101,28 @@ cases['20190519_KGRR'] = {'date':'20190519',
      }
 
 
+cases['20190314_KDTX'] = {'date':'20190314',
+     'rda':'KDTX',
+     'lonmin':-85.4,
+     'lonmax':-83.20,
+     'latmin':41.75,
+     'latmax':43.5,
+     'start_latlon': (42.87,-84.158),
+     'end_latlon': (43.93,-84.035),
+     'start_time': '2019-03-14 22:49:33',
+     'end_time': '2019-03-14 22:58:17',
+     'extent': [-85.4,-83.2,41.75,43.5],
+     'sat_extent' : [-85.0,-83.2,42.0,43.5],
+     #'sat_extent' : [-87.4,-81.2,39.75,45.5],
+     'storm_motion': (236,45),
+     #'eventloc': (-85,19,42.31),
+     'feature_follow': False,
+     #'eventloc2': (-94.93,39.06),
+     'cutlist': ['00.50','00.90','1.30'],
+     'shapelist':['MI']
+     }
+
+
 cases['20190527_KGLD'] = {'date':'20190527',
      'rda':'KGLD',
      'lonmin':-103.00,
@@ -178,6 +200,7 @@ cases['20190601_KGRR'] = {'date':'20190601',
      'shapelist':['MI']
      }
 
+
 			
 cases['h'] = {'date':'20190601',
      'rda':'KGRRfirst',
@@ -192,6 +215,6 @@ cases['h'] = {'date':'20190601',
 
 
 #this_case = cases['eek']
-this_case = cases['20190601_KGRR']
+this_case = cases['20190314_KDTX']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
 #this_case['cutlist'] =  ['00.50']
