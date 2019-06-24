@@ -103,23 +103,25 @@ cases['20190519_KGRR'] = {'date':'20190519',
 
 cases['20190314_KDTX'] = {'date':'20190314',
      'rda':'KDTX',
-     'lonmin':-85.4,
-     'lonmax':-83.20,
-     'latmin':41.75,
+     'lonmin':-84.5,
+     'lonmax':-83.35,
+     'latmin':42.57,
      'latmax':43.5,
      'start_latlon': (42.87,-84.158),
      'end_latlon': (43.93,-84.035),
      'start_time': '2019-03-14 22:49:33',
      'end_time': '2019-03-14 22:58:17',
-     'extent': [-85.4,-83.2,41.75,43.5],
+     'start_figures': 20190314221500,
+     'end_figures': 20190314234000,
+     'extent': ['lonmin','lonmax''latmin','latmax'],
      'sat_extent' : [-85.0,-83.2,42.0,43.5],
      #'sat_extent' : [-87.4,-81.2,39.75,45.5],
      'storm_motion': (236,45),
      #'eventloc': (-85,19,42.31),
      'feature_follow': False,
      #'eventloc2': (-94.93,39.06),
-     'cutlist': ['00.50','00.90','1.30'],
-     'shapelist':['MI']
+     'cutlist': ['1.80','2.40'],
+     'shapelist':['MI','20190314_survey']
      }
 
 
