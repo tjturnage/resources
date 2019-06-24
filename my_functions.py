@@ -40,7 +40,6 @@ def create_process_file_list(src_dir,product_list,cut_list,windows):
     for f in file_list:
         p = pathlib.PurePath(f)
         parts = p.parts
-        print(parts)
         part_list.append(parts)
     
     sorted_path_list = []
