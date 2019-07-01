@@ -346,8 +346,8 @@ def build_html(image_dir):
     # available at https://github.com/tjturnage/resources for download
     # if not manually putting into image directory, will need to note it's location and execute the following
     # two commands
-    #js_src = 'C:/data/scripts/resources/hanis_min.js'
-    js_src = '/data/scripts/resources/hanis_min.js'
+    js_src = 'C:/data/scripts/resources/hanis_min.js'
+    #js_src = '/data/scripts/resources/hanis_min.js'
     shutil.copyfile(js_src,os.path.join(image_dir,'hanis_min.js'))
     
     # there will be an index.html file created in the image directory to be subsequently opened in an internet browser
@@ -380,8 +380,8 @@ def build_html(image_dir):
     }\
     #container {\
     	position: relative;\
-    	width: 1100px;\
-    	margin: 0 auto 0 auto;\
+    	width: 1500px;\
+     	margin: 0 auto 0 auto;\
     }\
     #hanis {\
     	background-color: #AEAEAE;\
@@ -406,7 +406,7 @@ def build_html(image_dir):
       <div id="container">\
         <div id="hanis"></div>\
         <p>' + loop_description + '\n\
-          HAniS developed by Tom Whittaker (<a href="http://www.ssec.wisc.edu/hanis/">http://www.ssec.wisc.edu/hanis/</a>)\
+          Velocity products developed by CIMMS (<a href="https://cimms.ou.edu/" target_="blank">https://cimms.ou.edu/</a>) / NSSL (<a href="https://www.nssl.noaa.gov/" target="_blank">https://www.nssl.noaa.gov/</a>) group and are experimental<br>Animation javascript developed by Tom Whittaker (<a href="http://www.ssec.wisc.edu/hanis/">http://www.ssec.wisc.edu/hanis/</a>)\
         </p>\
       </div>\
     </body>\
@@ -418,6 +418,7 @@ def build_html(image_dir):
     f.write(full_html)
     f.close()
     return
+
 
 """
 

@@ -40,6 +40,8 @@ shapeDict['MI'] = {'shape_dir':'counties_mi','file':'counties_MI.shp'}
 shapeDict['CO'] = {'shape_dir':'counties_co','file':'counties_CO.shp'}
 shapeDict['KS'] = {'shape_dir':'counties_ks','file':'counties_KS.shp'}
 shapeDict['MO'] = {'shape_dir':'counties_mo','file':'counties_MO.shp'}
+shapeDict['IN'] = {'shape_dir':'counties_in','file':'counties_IN.shp'}
+shapeDict['WI'] = {'shape_dir':'counties_wi','file':'counties_WI.shp'}
 shapeDict['20190314_survey'] = {'shape_dir':'survey_20190314','file':'survey.shp'}
 
 shapelist = this_case['shapelist']

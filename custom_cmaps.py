@@ -121,9 +121,17 @@ wv_position = [0, (109-75)/109,(109-47)/109, (109-30)/109, (109-15.5)/109,108/10
 wv_cmap=make_cmap(wv_colors, position=wv_position,bit=True)
 plt.register_cmap(cmap=wv_cmap)
 
+#--- Lightning
+ltg_colors = [(4/5,0,0),(0,4/5,0),(0,0,4/5)]
+ltg_position = [0,0.6,1]
+ltg_cmap=make_cmap(ltg_colors, position=ltg_position)
+plt.register_cmap(cmap=ltg_cmap)
+
 #-------- End creating custom color maps --------
 
 plts = {}
+#plts['C02'] = {'cmap':'Greys_r','vmn':0.0,'vmx':1.0,'title':'Channel 2 Visible'}
+plts['C02i'] = {'cmap':'Greys_r','vmn':0.0,'vmx':1.0,'title':'Channel 2 Visible'}
 plts['C02'] = {'cmap':'Greys_r','vmn':0.0,'vmx':1.0,'title':'Channel 2 Visible'}
 plts['C03'] = {'cmap':'Greys_r','vmn':0.0,'vmx':1.0,'title':'Channel 3 Near IR'}
 plts['C08'] = {'cmap':wv_cmap,'vmn':-109.0,'vmx':0.0,'title':'Channel 8 W/V'}
@@ -131,7 +139,10 @@ plts['C09'] = {'cmap':wv_cmap,'vmn':-109.0,'vmx':0.0,'title':'Channel 9 W/V'}
 plts['C10'] = {'cmap':wv_cmap,'vmn':-109.0,'vmx':0.0,'title':'Channel 10 W/V'}
 plts['C13'] = {'cmap':ir_cmap,'vmn':-110.0,'vmx':56.0,'title':'Channel 13 IR'}
 plts['GLM'] = {'title':'GLM'}
+plts['ltg_low'] = {'title':'Low Lightning'}
+plts['ltg_high'] = {'title':'High Lightning'}
 plts['Ref'] = {'cmap':ref_cmap,'vmn':-30,'vmx':80,'title':'Reflectivity','cbticks':[0,15,30,50,60],'cblabel':'dBZ','title':'Reflectivity'}
+plts['Vel'] = {'cmap':v_cmap,'vmn':-100,'vmx':100,'title':'Velocity','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
 
 
 

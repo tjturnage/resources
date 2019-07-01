@@ -62,7 +62,7 @@ cases['20170919_KMVX'] = {'date':'20170919',
      'end_time': '2017-07-20 00:18:01',
      'storm_motion': (211,35),  
      'feature_follow': True,
-     'cutlist': ['01.80','02.40'],
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
      'shapelist':['MN','ND']
      }
 
@@ -111,6 +111,7 @@ cases['20190314_KDTX'] = {'date':'20190314',
      'end_latlon': (43.93,-84.035),
      'start_time': '2019-03-14 22:49:33',
      'end_time': '2019-03-14 22:58:17',
+     'pandas' : ('2019-06-01 22:15', 24, '5min'),
      'start_figures': 20190314221500,
      'end_figures': 20190314234000,
      'extent': ['lonmin','lonmax''latmin','latmax'],
@@ -120,7 +121,7 @@ cases['20190314_KDTX'] = {'date':'20190314',
      #'eventloc': (-85,19,42.31),
      'feature_follow': False,
      #'eventloc2': (-94.93,39.06),
-     'cutlist': ['1.80','2.40'],
+     'cutlist': ['0.50','0.90','1.30','1.80','2.40'],
      'shapelist':['MI','20190314_survey']
      }
 
@@ -183,7 +184,7 @@ cases['20190528_KTWX'] = {'date':'20190528',
      'eventloc2': (-94.93,39.06),
      'storm_motion': (240,31),
      'feature_follow': True,
-     'cutlist': ['03.10','04.00'],
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
      'shapelist':['KS','MO']
      }
 
@@ -194,12 +195,14 @@ cases['20190601_KGRR'] = {'date':'20190601',
      'lonmax':-84.90,
      'latmax':42.62,
      'latmin':42.06,
-     'extent': [-85.61,-84.90,42.06,42.62],
-     'sat_extent' : [-86.4,-84.3,41.7,43.2],
+     #'extent': [-85.61,-84.90,42.06,42.62],
+     'extent': [-86.0,-83.5,41.00,42.0],
+     'sat_extent' : [-86.5,-83.2,41.3,43.8],
+     'pandas' : ('2019-06-01 23:28', 20, '1min'),
      'eventloc': (-85,19,42.31),
      #'eventloc2': (-94.93,39.06),
-     'cutlist': ['00.90','01.80','2,40','08.00','10.00'],
-     'shapelist':['MI']
+     'cutlist': ['00.50'],
+     'shapelist':['MI','IN']
      }
 
 
@@ -217,6 +220,6 @@ cases['h'] = {'date':'20190601',
 
 
 #this_case = cases['eek']
-this_case = cases['20190314_KDTX']
+this_case = cases['20190601_KGRR']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
 #this_case['cutlist'] =  ['00.50']
