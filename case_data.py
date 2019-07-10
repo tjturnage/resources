@@ -180,12 +180,11 @@ cases['20190528_KTWX'] = {'date':'20190528',
      'end_latlon': (38.877,-95.308),
      'start_time': '2019-05-28 23:04:39',
      'end_time': '2019-05-28 23:12:55',
-     'eventloc': (-95.41,38.81),
-     'eventloc2': (-94.93,39.06),
      'storm_motion': (240,31),
      'feature_follow': True,
-     'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
-     'shapelist':['KS','MO']
+     'cutlist': ['00.50','00.90'],
+     #'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
+     'shapelist':['KS','MO','20190528_survey']
      }
 
 
@@ -205,7 +204,41 @@ cases['20190601_KGRR'] = {'date':'20190601',
      'shapelist':['MI','IN']
      }
 
+cases['20190702_KGRR'] = {'date':'20190702',
+     'rda':'KGRR',
+     'lonmin':-87.0,
+     'lonmax':-84.6,
+     'latmax':43.9,
+     'latmin':42.0,
+     'sat_extent' : [-88.0,-85.0,42.3,44.7],
+     'pandas' : ('2019-07-02 21:40', 29, '5min'),
+     'start_latlon': (43.164,-86.895),
+     'end_latlon': (43.08,-86.147),
+     'start_time': '2019-07-02 21:40:04',
+     'end_time': '2019-07-02 22:28:54',
+     'feature_follow': True,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (279,39),
+     'shapelist':['Lake_MI_counties']
+     }
 
+cases['20190704_KGRR'] = {'date':'20190704',
+     'rda':'KGRR',
+     'lonmin':-86.25,
+     'lonmax':-84.75,
+     'latmax':43.25,
+     'latmin':42.0,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'start_latlon': (43.164,-86.895),
+     'end_latlon': (43.08,-86.147),
+     'start_time': '2019-07-02 21:40:04',
+     'end_time': '2019-07-02 22:28:54',
+     'feature_follow': False,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (279,39),
+     'shapelist':['Lake_MI_counties']
+     }
 			
 cases['h'] = {'date':'20190601',
      'rda':'KGRRfirst',
@@ -220,6 +253,6 @@ cases['h'] = {'date':'20190601',
 
 
 #this_case = cases['eek']
-this_case = cases['20190601_KGRR']
+this_case = cases['20190704_KGRR']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
 #this_case['cutlist'] =  ['00.50']
