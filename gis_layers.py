@@ -34,26 +34,28 @@ shapeDict = {}
 #shapeDict['ND'] = {'shape_dir':'counties_nd','file':'counties_ND.shp','shape_name':'COUNTIES_ND'}
 #shapeDict['MN'] = {'shape_dir':'counties_mn','file':'counties_MN.shp','shape_name':'COUNTIES_MN'}
 #shapeDict['MI'] = {'shape_dir':'counties_mi','file':'counties_MI.shp','shape_name':'COUNTIES_MI'}
-shapeDict['ND'] = {'shape_dir':'counties_nd','file':'counties_ND.shp'}
-shapeDict['MN'] = {'shape_dir':'counties_mn','file':'counties_MN.shp'}
-shapeDict['MI'] = {'shape_dir':'counties_mi','file':'counties_MI.shp'}
-shapeDict['CO'] = {'shape_dir':'counties_co','file':'counties_CO.shp'}
-shapeDict['KS'] = {'shape_dir':'counties_ks','file':'counties_KS.shp'}
-shapeDict['MO'] = {'shape_dir':'counties_mo','file':'counties_MO.shp'}
-shapeDict['IN'] = {'shape_dir':'counties_in','file':'counties_IN.shp'}
-shapeDict['WI'] = {'shape_dir':'counties_wi','file':'counties_WI.shp'}
-shapeDict['20190314_survey'] = {'shape_dir':'survey_20190314','file':'survey.shp'}
+shapeDict['ND'] = {'type':'county','shape_dir':'counties_nd','file':'counties_ND.shp'}
+shapeDict['MN'] = {'type':'county','shape_dir':'counties_mn','file':'counties_MN.shp'}
+shapeDict['MI'] = {'type':'county','shape_dir':'counties_mi','file':'counties_MI.shp'}
+shapeDict['CO'] = {'type':'county','shape_dir':'counties_co','file':'counties_CO.shp'}
+shapeDict['KS'] = {'type':'county','shape_dir':'counties_ks','file':'counties_KS.shp'}
+shapeDict['MO'] = {'type':'county','shape_dir':'counties_mo','file':'counties_MO.shp'}
+shapeDict['IN'] = {'type':'county','shape_dir':'counties_in','file':'counties_IN.shp'}
+shapeDict['WI'] = {'type':'county','shape_dir':'counties_wi','file':'counties_WI.shp'}
+shapeDict['Lake_MI_counties'] = {'type':'county','shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
+shapeDict['20190314_survey'] = {'type':'survey','shape_dir':'survey_20190314','file':'survey.shp'}
+shapeDict['20190528_survey'] = {'type':'survey','shape_dir':'survey_20190528','file':'20190528_survey.shp'}
 
 shapelist = this_case['shapelist']
 #shapelist = ['KS','CO','MO']
 shape_mini = {}
 for t in shapelist:
     shape = shapeDict[t]
+    shape_type = shape['type']
     shape_file = shape['file']
     shape_path = os.path.join(base_gis_dir,shape['shape_dir'],shape['file'])
     SHAPE = get_shapefile(shape_path)
     shape_mini[t] = SHAPE
-
 
 
 states = cfeature.NaturalEarthFeature(
