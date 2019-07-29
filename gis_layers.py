@@ -45,6 +45,8 @@ shapeDict['WI'] = {'type':'county','shape_dir':'counties_wi','file':'counties_WI
 shapeDict['Lake_MI_counties'] = {'type':'county','shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
 shapeDict['20190314_survey'] = {'type':'survey','shape_dir':'survey_20190314','file':'survey.shp'}
 shapeDict['20190528_survey'] = {'type':'survey','shape_dir':'survey_20190528','file':'20190528_survey.shp'}
+shapeDict['20190720_paths'] = {'type':'survey','shape_dir':'survey_20190720','file':'extractDamagePaths.shp'}
+shapeDict['20190720_points'] = {'type':'survey','shape_dir':'survey_20190720','file':'wind_damage_points.shp'}
 
 shapelist = this_case['shapelist']
 #shapelist = ['KS','CO','MO']
