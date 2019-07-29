@@ -48,95 +48,6 @@ Last updated:
 #                'SRV','SpectrumWidth']
 
 cases = {}
-cases['20170919_KMVX'] = {'date':'20170919',
-     'rda':'KMVX',
-     'latmax':48.1,
-     'latmin':46.05,
-     'lonmin':-98.75,
-     'lonmax':-96.15,
-     'eventloc': (-96.53,47.5452),
-     'eventloc2': (-96.5337,47.5401),     
-     'start_latlon': (47.31,-96.70),
-     'end_latlon': (47.39,-96.65),
-     'start_time': '2017-07-20 00:07:34',
-     'end_time': '2017-07-20 00:18:01',
-     'storm_motion': (211,35),  
-     'feature_follow': True,
-     'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
-     'shapelist':['MN','ND']
-     }
-
-
-cases['20180827_KMVX'] = {'date':'20180827',
-     'rda':'KMVX',
-     'latmax':48.25,
-     'latmin':46.750,
-     'lonmin':-97.4,
-     'lonmax':-95.5,
-     'extent': [-97.4,-95.5,46.75,48.25],
-     'storm_motion': (250,55),    
-     'eventloc': (-96.12,47.44),
-     'cutlist': ['00.50', '00.90', '01.30'],
-     'shapelist':['MN','ND']
-     }
-
-
-cases['20190519_KGRR'] = {'date':'20190519',
-     'rda':'KGRR',
-     'lonmin':-85.72,
-     'lonmax':-85.17,
-     'latmin':42.3,
-     'latmax':42.75,
-     'eventloc': (-85.17,42.53),
-     'extent':[-85.75,-85.0,39.30],
-     'start_latlon': (42.43,-85.44),
-     'end_latlon': (42.51,-85.246),
-     'start_time': '2019-05-19 22:03:39',
-     'end_time': '2019-05-19 22:18:11',
-     'storm_motion': (240,30),
-     'feature_follow': True,
-     'products': ['AzShear_Storm','DivShear_Storm'],
-     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40'],
-     'shapelist':['MI']
-     }
-
-
-cases['20190314_KDTX'] = {'date':'20190314',
-     'rda':'KDTX',
-     'lonmin':-84.5,
-     'lonmax':-83.35,
-     'latmin':42.57,
-     'latmax':43.5,
-     'start_latlon': (42.87,-84.158),
-     'end_latlon': (43.93,-84.035),
-     'start_time': '2019-03-14 22:49:33',
-     'end_time': '2019-03-14 22:58:17',
-     'pandas' : ('2019-06-01 22:15', 24, '5min'),
-     'start_figures': 20190314221500,
-     'end_figures': 20190314234000,
-     'extent': ['lonmin','lonmax''latmin','latmax'],
-     'sat_extent' : [-85.0,-83.2,42.0,43.5],
-     #'sat_extent' : [-87.4,-81.2,39.75,45.5],
-     'storm_motion': (236,45),
-     #'eventloc': (-85,19,42.31),
-     'feature_follow': False,
-     #'eventloc2': (-94.93,39.06),
-     'cutlist': ['0.50','0.90','1.30','1.80','2.40'],
-     'shapelist':['MI','20190314_survey']
-     }
-
-
-cases['20190527_KGLD'] = {'date':'20190527',
-     'rda':'KGLD',
-     'lonmin':-103.00,
-     'lonmax':-101.8,
-     'latmin':38.05,
-     'latmax':39.0,     
-     'eventloc': (-102.29,38.59),
-     'storm_motion': (200,49),
-     'cutlist': ['00.50', '00.90'],
-     'shapelist':['CO','KS']     
-     }
 
 cases['20080608_KGRR'] = {'date':'20080608',
      'rda':'KGRR',
@@ -170,6 +81,98 @@ cases['20080608_KDTX'] = {'date':'20080608',
      'shapelist':['MI']
      }
 
+cases['20170919_KMVX'] = {'date':'20170919',
+     'rda':'KMVX',
+     'latmax':48.1,
+     'latmin':46.05,
+     'lonmin':-98.75,
+     'lonmax':-96.15,
+     'eventloc': (-96.53,47.5452),
+     'eventloc2': (-96.5337,47.5401),     
+     'start_latlon': (47.31,-96.70),
+     'end_latlon': (47.39,-96.65),
+     'start_time': '2017-07-20 00:07:34',
+     'end_time': '2017-07-20 00:18:01',
+     'storm_motion': (211,35),  
+     'feature_follow': True,
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
+     'shapelist':['MN','ND']
+     }
+
+
+cases['20180827_KMVX'] = {'date':'20180827',
+     'rda':'KMVX',
+     'latmax':48.25,
+     'latmin':46.750,
+     'lonmin':-97.4,
+     'lonmax':-95.5,
+     'extent': [-97.4,-95.5,46.75,48.25],
+     'storm_motion': (250,55),    
+     'eventloc': (-96.12,47.44),
+     #'cutlist': ['00.50', '00.90', '01.30'],
+     'cutlist': ['01.80', '02.40', '03.10'],
+     'shapelist':['MN','ND']
+     }
+
+cases['20190314_KDTX'] = {'date':'20190314',
+     'rda':'KDTX',
+     'lonmin':-84.5,
+     'lonmax':-83.35,
+     'latmin':42.57,
+     'latmax':43.5,
+     'start_latlon': (42.87,-84.158),
+     'end_latlon': (43.93,-84.035),
+     'start_time': '2019-03-14 22:49:33',
+     'end_time': '2019-03-14 22:58:17',
+     'pandas' : ('2019-06-01 22:15', 24, '5min'),
+     'start_figures': 20190314221500,
+     'end_figures': 20190314234000,
+     'extent': ['lonmin','lonmax''latmin','latmax'],
+     'sat_extent' : [-85.0,-83.2,42.0,43.5],
+     #'sat_extent' : [-87.4,-81.2,39.75,45.5],
+     'storm_motion': (236,45),
+     #'eventloc': (-85,19,42.31),
+     'feature_follow': False,
+     #'eventloc2': (-94.93,39.06),
+     'cutlist': ['0.50','0.90','1.30','1.80','2.40'],
+     'shapelist':['MI','20190314_survey']
+     }
+
+cases['20190519_KGRR'] = {'date':'20190519',
+     'rda':'KGRR',
+     'lonmin':-85.72,
+     'lonmax':-85.17,
+     'latmin':42.3,
+     'latmax':42.75,
+     'eventloc': (-85.17,42.53),
+     'extent':[-85.75,-85.0,39.30],
+     'start_latlon': (42.43,-85.44),
+     'end_latlon': (42.51,-85.246),
+     'start_time': '2019-05-19 22:03:39',
+     'end_time': '2019-05-19 22:18:11',
+     'storm_motion': (240,30),
+     'feature_follow': True,
+     'products': ['AzShear_Storm','DivShear_Storm'],
+     'cutlist': ['00.50', '00.90', '01.30', '01.80', '02.40'],
+     'shapelist':['MI']
+     }
+
+
+
+cases['20190527_KGLD'] = {'date':'20190527',
+     'rda':'KGLD',
+     'lonmin':-103.00,
+     'lonmax':-101.8,
+     'latmin':38.05,
+     'latmax':39.0,     
+     'eventloc': (-102.29,38.59),
+     'storm_motion': (200,49),
+     'cutlist': ['00.50', '00.90'],
+     'shapelist':['CO','KS']     
+     }
+
+
+
 cases['20190528_KTWX'] = {'date':'20190528',
      'rda':'KTWX',
      'lonmin':-96.26,
@@ -202,6 +205,25 @@ cases['20190601_KGRR'] = {'date':'20190601',
      #'eventloc2': (-94.93,39.06),
      'cutlist': ['00.50'],
      'shapelist':['MI','IN']
+     }
+
+cases['20190608_KMVX'] = {'date':'20190608',
+     'rda':'KMVX',
+     'latmax':47.75,
+     'latmin':47.20,
+     'lonmin':-97.0,
+     'lonmax':-96.3,
+     'eventloc': (-96.2146,47.4998),
+     'eventloc2': (-96.1488,47.5248),
+     'start_latlon': (47.445,-96.3423),
+     'end_latlon': (47.50,-96.208),
+     'start_time': '2019-06-09 00:23:53',
+     'end_time': '2019-06-09 00:37:36',
+     'storm_motion': (232,28),  
+     'feature_follow': True,
+     #'cutlist': ['00.50','00.90','01.30','01.80','02.40'],
+     'cutlist': ['02.40','03.10','04.00'],
+     'shapelist':['MN','ND']
      }
 
 cases['20190702_KGRR'] = {'date':'20190702',
@@ -239,20 +261,27 @@ cases['20190704_KGRR'] = {'date':'20190704',
      'storm_motion': (279,39),
      'shapelist':['Lake_MI_counties']
      }
-			
-cases['h'] = {'date':'20190601',
-     'rda':'KGRRfirst',
-     'lonmin':-88.0,
-     'lonmax':-84.5,
-      'latmax':44.5,
-     'latmin':42.0,
-     #'eventloc': (-95.41,38.81),
-     #'eventloc2': (-94.93,39.06),
-     'cutlist': ['00.50','08.00']
-     }
 
+cases['20190720_KGRB'] = {'date':'20190720',
+     'rda':'KGRB',
+     'lonmin':-92.5,
+     'lonmax':-89.45,
+     'latmax':46.65,
+     'latmin':44.25,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'start_latlon': (45.685,-90.444),
+     'end_latlon': (45.310,-89.325),
+     'start_time': '2019-07-20 00:05:18',
+     'end_time': '2019-07-20 01:08:30',
+     'feature_follow': True,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (305,50),
+     'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
+     }
+			
 
 #this_case = cases['eek']
-this_case = cases['20190704_KGRR']
+this_case = cases['20190720_KGRB']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
-#this_case['cutlist'] =  ['00.50']
+#this_case['cutlist'] =  ['00.90','01.30','01.80']
