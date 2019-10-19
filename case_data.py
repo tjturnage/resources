@@ -262,6 +262,27 @@ cases['20190704_KGRR'] = {'date':'20190704',
      'shapelist':['Lake_MI_counties']
      }
 
+
+cases['20190911_KGRR'] = {'date':'20190911',
+     'rda':'KGRR',
+     'lonmin':-86.65,
+     'lonmax':-85.95,
+     'latmax':43.30,
+     'latmin':42.75,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'start_latlon': (42.979,-85.722),
+     'end_latlon': (42.917,-85.30),
+     'start_time': '2019-09-11 23:40:23',
+     'end_time': '2019-09-12 00:06:54',
+     'feature_follow': True,
+     'cutlist': ['03.10'],
+     'storm_motion': (278,46),
+     'start_figures': 20190911231000,     
+     'end_figures': 20190912004000,
+     'shapelist':['Lake_MI_counties','20190911_survey']
+     }
+
 cases['20190720_KGRB'] = {'date':'20190720',
      'rda':'KGRB',
      'lonmin':-92.5,
@@ -279,9 +300,27 @@ cases['20190720_KGRB'] = {'date':'20190720',
      'storm_motion': (305,50),
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
      }
-			
+
+cases['20190720_KGRBB'] = {'date':'20190720',
+     'rda':'KGRB2',
+     'lonmin':-91.25,
+     'lonmax':-89.6,
+     'latmax':45.05,
+     'latmin':43.75,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'start_latlon': (44.40,-90.142),
+     'end_latlon': (44.25,-88.325),
+     'start_time': '2019-09-11 23:00:00',
+     'end_time': '2019-09-12 01:00:00',
+     'feature_follow': True,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (277,55),
+     'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
+     }			
 
 #this_case = cases['eek']
-this_case = cases['20190720_KGRB']
-this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth']
+#this_case = cases['20190720_KGRBB']
+this_case = cases['20190911_KGRR']
+this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']
