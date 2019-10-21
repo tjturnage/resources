@@ -1,19 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Jun 18 09:33:56 2019
+Updated: 10/21/19
 
-@author: tjtur
+added the following for dynamic creation of figure sizes:
+- define_mosaic_size
 
-List:
-    create_process_file_list
-    latlon_from_radar
-    calc_dlatlon_dt
-    make_ticks
-    calc_new_extent
-    calc_srv
-    get_shapefile
-    figure_timestamp
-    build_html
+added the following for satellite-create-figures:
+- add_radar_paths
+- make_radar_array
+- ltg_plot
 
 """
 
@@ -24,13 +20,22 @@ import math
 import pathlib
 from datetime import datetime,timezone
 import numpy as np
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
 from pyproj import Geod
-import cartopy.io.shapereader as shpreader
 from operator import itemgetter
 from itertools import groupby
+import xarray as xr
 
+def define_mosaic_size(products):
+    mosaic_size = {}
+    mosaic_size[2] = {'h':6,'w':15,'rows':1,'columns':2}
+    mosaic_size[3] = {'h':6,'w':17,'rows':1,'columns':3}
+    mosaic_size[4] = {'h':12,'w':14,'rows':2,'columns':2}
+    mosaic_size[6] = {'h':12,'w':20,'rows':2,'columns':3}
+    height = mosaic_size[len(products)]['h']
+    width = mosaic_size[len(products)]['w']
+    rows = mosaic_size[len(products)]['rows']
+    cols = mosaic_size[len(products)]['columns']
+    return width, height, rows, cols
 
 def create_process_file_list(src_dir,product_list,cut_list,windows):
     part_list = []
@@ -54,8 +59,6 @@ def create_process_file_list(src_dir,product_list,cut_list,windows):
 
         sorted_path_list.append(this_one)
 
-
-
     trimmed_path_list = []
     for path in range(0,len(sorted_path_list)):
         src_filepath = str(sorted_path_list[path])
@@ -70,7 +73,36 @@ def create_process_file_list(src_dir,product_list,cut_list,windows):
     
     return trimmed_path_list
 
-
+def add_radar_paths(file_dir,separator,code,met_info):
+    """
+    Build list of file paths to use for radar data
+    This is commonly called from 'sat-the-final-chapter' with creating radar/satellite mosaic combos
+    
+    Parameters
+    ----------
+    file_dir : string
+               The directory containing the netcdf files from which a subset
+               gets selected.
+   separator : string
+               string to use for splitting - typically '.'
+        code : string
+               use 'r' for reflectivity
+               use 'v' for velocity
+    met_info : array
+               a collection of absolute filepaths to the data sources for plotting
+                   
+    Returns
+    -------
+         Nothing, just appends to met list
+    """
+    files = os.listdir(file_dir)
+    for z in files:
+        file_info = str.split(z,'.')
+        file_time_str = file_info[0]
+        file_datetime = datetime.strptime(file_time_str,"%Y%m%d-%H%M%S")
+        info = [file_datetime,code,os.path.join(file_dir,z)]
+        met_info.append(info)
+    return
 
 def latlon_from_radar(data):
     """
@@ -124,16 +156,35 @@ def latlon_from_radar(data):
     lat,lon,back=g.fwd(center_lon,center_lat,az2D,rng2D)
     return dnew2,lat,lon,back
 
+def make_radar_array(ds,ds_type):
+    """
+    This is a condensed version of radar data mapping used with satellite
+    plotting in satellite-create-figures. The assumption is that we're
+    only interested in reflectivity or velocity
+    """
+    data = xr.open_dataset(ds)
+    dnew2,lats,lons,back=latlon_from_radar(data)
+    if ds_type == 'Ref':
+        da = dnew2.ReflectivityQC
+    elif ds_type == 'Vel':
+        da = dnew2.Velocity
+    else:
+        pass
+    arr = da.to_masked_array(copy=True)
+    arr_filled = arr.filled()
+    return arr_filled,lats,lons
+
 
 def calc_dlatlon_dt(starting_coords,starting_time,ending_coords,ending_time):
     """
-    One-time calculation of changes in latitude and longitude with respect to time
-    to implement feature-following zoom. Radar plotting software should be used
-    beforehand to track a feature's lat/lon position at two different scan times
+    One-time calculation of changes in latitude and longitude
+    with respect to time to implement feature-following zoom.
+    Radar plotting software should be used beforehand to track a 
+    feature's lat/lon position at two different scan times
     along with the two different scan times.
     
-    This needs to be executed only once at the beginning since dlat_dt and dlon_dt should
-    remain constant.
+    This needs to be executed only once at the beginning since 
+    dlat_dt and dlon_dt should remain constant.
     
     
     Parameters
@@ -344,7 +395,7 @@ def build_html(image_dir):
     
     # following file has to be copied into image directory
     # available at https://github.com/tjturnage/resources for download
-    # if not manually putting into image directory, will need to note it's location and execute the following
+    # if not manually putting into image directory, will need to note its location and execute the following
     # two commands
     js_src = 'C:/data/scripts/resources/hanis_min.js'
     #js_src = '/data/scripts/resources/hanis_min.js'
@@ -419,37 +470,54 @@ def build_html(image_dir):
     f.close()
     return
 
-
-"""
-
-        #azpos_tmp = da.to_masked_array(copy=True)  
-        #azpos_fill = azpos_tmp.filled()
-        #azpos_fill[azpos_fill<0] = 0
-        #azpos_lats = lats
-        #azpos_lons = lons
-        #arDict['AzShear_Pos'] = {'ar':azpos_fill,'lat':azpos_lats,'lon':azpos_lons}
-        #azposdone = True
+def ltg_plot(highlow,ltg,a):
+    """
+    Plots lightning and assigns +/ based on polarity and color codes based
+    on ground stikes versus height of intercloud flash
+    
+    Parameters
+    ----------
+    highlow : string to say whether we're plotting low or high
+        ltg : pandas dataframe containing strike data
+          a:  matplotlib figure pane in which to create scatterplot
         
-        #dvneg_tmp = da.to_masked_array(copy=True)
-        #dvneg_fill = dvneg_tmp.filled()
-        #dvneg_fill[dvneg_fill<-1] = 0
-        #dvneg_fill[dvneg_fill>0] = 0
-        #dvnegdone = True
-        #dvneg_lats = lats
-        #dvneg_lons = lons
-        #arDict['DivShear_Neg'] = {'ar':dvneg_fill,'lat':dvneg_lats,'lon':dvneg_lons}
-        #dvnegdone = True
-
-        #csg_lats = lats
-        #csg_lons = lons
-            # Conv Shear Gradient equals square root of (negative_divshear**2 + positive_azshear**2)
-            #ar_sq = np.square(dv_fill) + np.square(az_fill)
-            #csg_sq = np.square(dvneg_fill) + np.square(azpos_fill)
-            #csg_arr = np.sqrt(csg_sq)
-            #arDict['Conv_Shear_Gradient'] = {'ar':csg_arr,'lat':csg_lats,'lon':csg_lons}
-            #csgdone = True        
-
-
-
-
-"""
+    Returns
+    -------
+    Nothing, just makes a scatterplot then exits
+                    
+    """    
+    for st in range(0,len(ltg)):
+        lat = ltg.latitude.values[st]
+        lon = ltg.longitude.values[st]
+        cur = ltg.peakcurrent[st]
+        hgt = ltg.icheight[st]    
+        size_add = 0
+        if hgt == 0:
+            col = 'r'
+            size_add = 10
+            zord = 10
+        elif hgt < 10000:
+            col = 'm'
+            size_add = 5
+            zord = 5
+        elif hgt < 15000:
+            col = 'c'
+            zord = 3            
+        elif hgt < 20000:
+            col = 'b'
+            zord = 2 
+        else:
+            col = 'g'
+            zord = 1 
+        if cur > 0:
+            symb = '+'
+        else:
+            symb = '_'
+        size = 10 + size_add
+        if highlow == 'low' and hgt == 0:    
+            a.scatter(lon,lat,s=size,marker=symb,c=col,zorder=zord)
+            a.set_title('EN Cloud to Ground')
+        elif highlow == 'high' and hgt > 0:
+            a.scatter(lon,lat,s=size,marker=symb,c=col,zorder=zord)
+            a.set_title('EN Intracloud')
+    return
