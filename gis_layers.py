@@ -58,7 +58,13 @@ for t in shapelist:
     shape = shapeDict[t]
     shape_type = shape['type']
     shape_file = shape['file']
-    shape_path = os.path.join(base_gis_dir,shape['shape_dir'],shape['file'])
+    if shape_type == 'county':
+        shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
+    elif shape_type == 'survey':
+        shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
+    else:
+        pass
+    print(shape_path)
     SHAPE = get_shapefile(shape_path)
     shape_mini[t] = SHAPE
 
