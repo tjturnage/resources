@@ -79,12 +79,25 @@ plts['ReflectivityQC'] = {'cmap':ref_cmap,'vmn':-30,'vmx':80,'title':'Reflectivi
 plts['Ref'] = {'cmap':ref_cmap,'vmn':-30,'vmx':80,'title':'Reflectivity','cbticks':[0,15,30,50,60],'cblabel':'dBZ','title':'Reflectivity'}
 
 #--- Velocity - need to home grow this so I don't require import from metpy
-v_norm, v_cmap = colortables.get_with_range('NWS8bitVel', -40, 40)
-v_cmap.set_under('k')
-plt.register_cmap(cmap=v_cmap)
-plts['Velocity'] = {'cmap':v_cmap,'vmn':-100,'vmx':100,'title':'Velocity','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
-plts['Vel'] = {'cmap':v_cmap,'vmn':-100,'vmx':100,'title':'Velocity','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
-plts['SRV'] = {'cmap':v_cmap,'vmn':-100,'vmx':100,'title':'SRV','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
+#v_norm, v_cmap = colortables.get_with_range('NWS8bitVel', -40, 40)
+#v_cmap.set_under('k')
+#plt.register_cmap(cmap=v_cmap)
+#vel_colors=[(12,250,250),(221,181,243),(238,186,248),(5,8,255),(14,22,255),(158,238,220),(119,244,154),(146,240,199),(3,239,0),(0,48,0),(87,124,85),(109,131,107),(138,110,124),(132,62,71),(93,2,3),(253,30,46),(253,155,156),(252,202,137),(255,255,0),(238,143,56),(238,143,56),(248,246,245),(248,246,245),(63,18,13),(63,18,13)]
+#vel_orig=[0,29,30,59,60,74,75,84,85,109,110,119,120,121,129,130,154,155,164,165,179,180,209,210,240]
+#vel_position = []
+#for a in vel_orig:
+#    vel_position.append(a/240)
+#vel_colors=[(0,0,0),(0,155,155),(0,255,235),(144,255,153),(0,255,0),(0,113,0),(83,156,83),(180,180,180),(135,69,88),(119,0,0),(255,0,0),(255,128,0),(255,255,0),(190,190,0),(0,0,0)]
+#vel_position = [0, 1/12, 55/240, 65/240, 75/240, 10/24, 11/24, 0.5, 13/24, 14/24, 165/240, 175/240, 185/240, 22/24, 1]
+vel_colors=[(0,0,0),(50,65,120),(55,70,130),(75,90,155),(100,120,180),(125,140,200),(175,200,250),(50,115,70),(75,135,90),(105,160,110),(130,180,135),(165,205,160),(225,225,225),(215,190,180),(190,150,130),(160,120,95),(135,85,55),(105,45,10),(240,160,140),(220,120,105),(195,80,70),(165,60,62),(135,55,55),(105,35,45)]
+vel_position=[0.0,0.001,0.05,0.1,0.15,0.2,0.25,0.255,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.745,0.75,0.8,0.85,0.9,0.95,1.0]
+vel_cmap=make_cmap(vel_colors, position=vel_position,bit=True)
+plts['Velocity'] = {'cmap':vel_cmap,'vmn':-100,'vmx':100,'title':'Velocity','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
+plts['Vel'] = {'cmap':vel_cmap,'vmn':-100,'vmx':100,'title':'Velocity','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
+plts['SRV'] = {'cmap':vel_cmap,'vmn':-100,'vmx':100,'title':'SRV','cbticks':[-100,-80,-60,-40,-20,0,20,40,60,80,100],'cblabel':'kts'}
+#plts['Velocity'] = {'cmap':vel_cmap,'vmn':-120,'vmx':120,'title':'Velocity','cbticks':[-120,-100,-80,-60,-40,-20,0,20,40,60,80,100,120],'cblabel':'kts'}
+#plts['Vel'] = {'cmap':vel_cmap,'vmn':-120,'vmx':120,'title':'Velocity','cbticks':[-120,-100,-80,-60,-40,-20,0,20,40,60,80,100,120],'cblabel':'kts'}
+#plts['SRV'] = {'cmap':vel_cmap,'vmn':-120,'vmx':120,'title':'SRV','cbticks':[-120,-100,-80,-60,-40,-20,0,20,40,60,80,100,120],'cblabel':'kts'}
 
 #--- Spectrum Width
 sw_colors = [(0,0,0),(220,220,255),(180,180,240),(50,50,150),(255,255,0),(255,150,0),(255,0,0),(255,255,255)]
@@ -168,8 +181,3 @@ plts['C03'] = {'cmap':'Greys_r','vmn':0.0,'vmx':1.0,'title':'Channel 3 Near IR'}
 plts['GLM'] = {'title':'GLM'}
 plts['ltg_low'] = {'title':'Low Lightning'}
 plts['ltg_high'] = {'title':'High Lightning'}
-
-#plts['Conv_Shear_Gradient'] = {'cmap':vg_cmap,'vmn':0.000,'vmx':0.015,'title':'Conv Shear Gradient','cbticks':[0,0.005,0.010,0.015],'cblabel':'s $\mathregular{^-}{^1}$'}
-#plts['AzShear_Pos'] = {'cmap':azdv_cmap,'vmn':-0.01,'vmx':0.01,'title':'Positive AzShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
-#plts['DivShear_Neg'] = {'cmap':azdv_cmap_r,'vmn':0.000,'vmx':0.015,'title':'Convergent Shear','cbticks':[0,0.005,0.010,0.015],'cblabel':'s $\mathregular{^-}{^1}$'}
-#plts['AzShear_Pos'] = {'cmap':azdv_cmap,'vmn':-0.01,'vmx':0.01,'title':'Positive AzShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
