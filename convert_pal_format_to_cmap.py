@@ -11,8 +11,8 @@ Takes .pal colortables used in GR2Analyst and creates
                   - a number of elements equal to the number of tuples in colors
 
 
-Looking for this syntax in the .pal file. In this case values are descending, but ascending
-can be handled too
+Looking for this syntax in the .pal file. In this case values (second column)
+are descending, but ascending can be handled too
 
 color:   1.05   175  175  175
 color:   1.00   100  255  100   175  175  175
@@ -30,21 +30,27 @@ def normalize(value,offset,value_range):
     return normalized[0:6]
 
 import os
+import re
+
 colors = []
 steps = []
 rgbs = []
 
+p = re.compile('olor:')
+
 gr2_dir = 'C:/Users/thomas.turnage/GR2/ColorCurves'
-pal = 'DKC_CC_only.pal'
+pal = 'DKC_reflectivity_Snow.pal'
 pal_file = os.path.join(gr2_dir,pal)
 
 #create an "rgbs" list with values and color tuple(s)
 with open(pal_file, "r") as src:
     with open("C:/data/fixed.txt", "w") as dst:
         for line in src:
-            data = line.split()
-            first_element = str(data[0])
-            if first_element == 'Color:' or first_element == 'color:':
+            m = p.search(line)
+            if m is not None:
+                data = line.split()
+            #first_element = str(data[0])
+            #if first_element == 'Color:' or first_element == 'color:':
                 inc = float(data[1])
                 if len(data) == 5:
                     tuple1 = '(' + data[-3] + ',' + data[-2] + ',' + data[-1] + ')'
@@ -56,10 +62,11 @@ with open(pal_file, "r") as src:
 
                 rgbs.append(thisone)
 
-        # With the created rgbs list, check if the first element value exceeds the last value
-        # if so, we have descending order
+        # With the created rgbs list, check if the first element value exceeds 
+        # the last value. If so, we have descending order
         # take min and max values to calculate data range
-        # determine if range crosses zero in which case values will have to be shifted to keep them all >= 0
+        # determine if range crosses zero in which case values will have to be 
+        # shifted to keep them all >= 0
         if float(rgbs[0][0]) > float(rgbs[-1][0]):
             descending = True
             min_value = float(rgbs[-1][0])
@@ -70,7 +77,8 @@ with open(pal_file, "r") as src:
             max_value = float(rgbs[-1][0])
 
         value_range = max_value - min_value
-        if min_value < 0:
+
+        if min_value != 0:
             offset = -min_value
         else:
             offset = 0
@@ -80,7 +88,8 @@ with open(pal_file, "r") as src:
             rgbs.reverse()
 
         # Step through elements in rgbs. Thise with two tuples (len>2), need a new step value
-        # for the second rgb tuple that stays just less than the step value of the first tuple in next element
+        # for the second rgb tuple that stays just less than the step value of the first tuple 
+        # in next element
         #
         # the normalize function takes the original values, accounts for if the range crosses zero
         # then normalizes to the appropriate relative value between 0 and 1.
@@ -111,8 +120,8 @@ with open(pal_file, "r") as src:
         # ensures the array ends with 1.0 using the last color tuple
         steps.append('1.0')
         colors.append(rgbs[-1][-1])
-        # inserts black (0,0,0) at the very beginning since the netcdfs treat missing values as
-        # -9999 and the bottom of the curve shows up with the color at the beginning
+        # inserts black (0,0,0) at the very beginning since netcdfs missing data are
+        # -9999 and will be assigned the color at the bottom of the curve
         steps.insert(0,'0.0')
         colors.insert(0,'(0,0,0)')
         steps[1] = '0.001'
