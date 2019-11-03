@@ -19,6 +19,7 @@ import shutil
 import math
 import pathlib
 from datetime import datetime,timezone
+import matplotlib as plt
 import numpy as np
 from pyproj import Geod
 from operator import itemgetter
@@ -521,3 +522,45 @@ def ltg_plot(highlow,ltg,a):
             a.scatter(lon,lat,s=size,marker=symb,c=col,zorder=zord)
             a.set_title('EN Intracloud')
     return
+
+def plot_settings():
+    SMALL_SIZE = 8
+    MEDIUM_SIZE = 10
+    BIGGER_SIZE = 12
+    BIGGEST_SIZE = 14
+    plt.rc('font', size=BIGGEST_SIZE)          # controls default text sizes
+    plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+    plt.rc('axes', labelsize=BIGGER_SIZE)    # fontsize of the x and y labels
+    plt.rc('xtick', labelsize=BIGGER_SIZE)    # fontsize of the tick labels
+    plt.rc('ytick', labelsize=MEDIUM_SIZE)    # fontsize of the tick labels
+    plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+    plt.rc('figure', titlesize=20)  # fontsize of the figure title
+    return
+
+class GridShader():
+    def __init__(self, ax, first=True, **kwargs):
+        self.spans = []
+        self.sf = first
+        self.ax = ax
+        self.kw = kwargs
+        self.ax.autoscale(False, axis="x")
+        self.cid = self.ax.callbacks.connect('xlim_changed', self.shade)
+        self.shade()
+    def clear(self):
+        for span in self.spans:
+            try:
+                span.remove()
+            except:
+                pass
+    def shade(self, evt=None):
+        self.clear()
+        xticks = self.ax.get_xticks()
+        xlim = self.ax.get_xlim()
+        xticks = xticks[(xticks > xlim[0]) & (xticks < xlim[-1])]
+        locs = np.concatenate(([[xlim[0]], xticks, [xlim[-1]]]))
+
+        start = locs[1-int(self.sf)::2]  
+        end = locs[2-int(self.sf)::2]
+
+        for s, e in zip(start, end):
+            self.spans.append(self.ax.axvspan(s, e, zorder=0, **self.kw))
