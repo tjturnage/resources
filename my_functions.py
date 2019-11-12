@@ -18,13 +18,44 @@ import re
 import shutil
 import math
 import pathlib
-from datetime import datetime,timezone
+from datetime import datetime,timezone,timedelta
+import pandas as pd
 import matplotlib as plt
 import numpy as np
 from pyproj import Geod
 from operator import itemgetter
 from itertools import groupby
 import xarray as xr
+
+
+def wind_chill(t,s):
+    """
+    Returns wind chill in degress F
+    Inputs:
+        t   : temperatures in degrees F
+        s   : wspd in MPH
+    """    
+    wc = 35.74 + 0.6215*t - 35.75*(s**0.16) + 0.4275*t*(s**0.16)
+    #print(round(wc))
+    return round(wc)
+
+def time_to_frostbite(wc,s):
+    if wc >= -15:
+        fbt = 4
+    if wc < -15:
+        fbt = 3
+    if wc < -35:
+        if s > 20:
+            fbt = 2
+        else:
+            fbt = 3
+    if wc < -45:
+        if s > 10:
+            fbt = 2
+        else:
+            fbt = 3
+                
+    return fbt
 
 def define_mosaic_size(products):
     mosaic_size = {}
@@ -37,6 +68,73 @@ def define_mosaic_size(products):
     rows = mosaic_size[len(products)]['rows']
     cols = mosaic_size[len(products)]['columns']
     return width, height, rows, cols
+
+
+
+def categorize(data_list,element):
+    """dat
+ [0,1,2,3,4,5,6],'major_yticks_labels':['0.00','0.01','0.05','0.10','0.2','0.3','0.5'], 
+        zr_list   : one hourly snow in hundredths
+    
+    """
+
+    vis_dict = {'0.0':0,'0.3':1,'0.6':2,'1':3,'2':4,'4':3,'6':6}
+    zr_dict = {'-0.1':0,'1':1,'8':2,'18':3,'28':4,'45':5}
+    sn_dict = {'-0.1':0,'0.05':1,'0.15':2,'0.45':3,'0.75':4,'0.95':5,'1.35':6,'1.85':7}  
+    wc_dict = {'-20':6,'-10':5,'0':4,'10':3,'20':2,'30':1,}
+    #sn_dict = {'-0.1':0,'0.05':1,'0.15':2,'0.33':3,'0.75':4,'1.5':5,'2.5':6}    
+
+    if element == 'sn':
+        data_dict = sn_dict
+    if element == 'zr':
+        data_dict = zr_dict    
+    if element == 'vis':
+        data_dict = vis_dict    
+    if element == 'wc':
+        data_dict = wc_dict
+
+
+    category_list = []  
+    for x in range(0,len(data_list)):
+        val = data_list[x]
+        for key in data_dict:
+            if val > float(key):
+                x_cat = data_dict[key]
+            
+        category_list.append(x_cat)
+
+    return category_list
+
+def dtList_nbm(run_dt,bulletin_type,tz_shift):
+    """
+      Create pandas date range of forecast valid times based on bulletin
+      issuance time and bulletin type.
+    
+      Parameters
+      ----------
+        run_dt : python datetime object
+                 Contains yr,mon,date,hour associated with bulletin issue time
+
+  bulletin_type: string
+
+                 'nbhtx' -- hourly guidance ( hourly)
+
+                 This is required to define model forecast hour start and 
+                 end times as a well as forecast hour interval.
+                  
+      Returns
+      -------
+           pandas date/time range to be used as index as well as start/end times
+    """
+
+    fcst_hour_zero_utc = run_dt + timedelta(hours=0)
+    fcst_hour_zero_local = fcst_hour_zero_utc - timedelta(hours=tz_shift)
+    #pTime = pd.Timestamp(fcst_hour_zero_utc)
+    pTime = pd.Timestamp(fcst_hour_zero_local)
+    idx = pd.date_range(pTime, periods=27, freq='H')
+
+    return idx, fcst_hour_zero_local
+
 
 def create_process_file_list(src_dir,product_list,cut_list,windows):
     part_list = []
