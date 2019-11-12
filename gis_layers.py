@@ -5,13 +5,6 @@ Created on Sat Jun 22 08:16:00 2019
 @author: tjtur
 """
 
-def get_shapefile(shape_path):
-    reader = shpreader.Reader(shape_path)
-    features = list(reader.geometries())
-    SHAPEFILE = cfeature.ShapelyFeature(features, ccrs.PlateCarree())
-    return SHAPEFILE
-
-
 import os
 from case_data import this_case
 import cartopy.crs as ccrs
@@ -53,20 +46,46 @@ shapeDict['20190704_survey'] = {'type':'survey','shape_dir':'survey_20190704','f
 shapeDict['20190911_survey'] = {'type':'survey','shape_dir':'survey_20190911','file':'manual_swath.shp'}
 shapelist = this_case['shapelist']
 #shapelist = ['KS','CO','MO']
-shape_mini = {}
-for t in shapelist:
-    shape = shapeDict[t]
-    shape_type = shape['type']
-    shape_file = shape['file']
-    if shape_type == 'county':
-        shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
-    elif shape_type == 'survey':
-        shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
-    else:
-        pass
-    print(shape_path)
-    SHAPE = get_shapefile(shape_path)
-    shape_mini[t] = SHAPE
+
+def get_shapefile(shape_path):
+    reader = shpreader.Reader(shape_path)
+    features = list(reader.geometries())
+    SHAPEFILE = cfeature.ShapelyFeature(features, ccrs.PlateCarree())
+    return SHAPEFILE
+
+
+def make_shapes():
+    shape_mini = {}
+    for t in shapelist:
+        shape = shapeDict[t]
+        shape_type = shape['type']
+        if shape_type == 'county':
+            shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
+        elif shape_type == 'survey':
+            shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
+        else:
+            pass
+        print(shape_path)
+        SHAPE = get_shapefile(shape_path)
+        shape_mini[t] = SHAPE
+    return shape_mini
+
+def make_shapes_mi():
+    shape_mini = {}
+    for t in ['MI']:
+        shape = shapeDict[t]
+        shape_type = shape['type']
+        if shape_type == 'county':
+            shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
+        elif shape_type == 'survey':
+            shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
+        else:
+            pass
+        print(shape_path)
+        SHAPE = get_shapefile(shape_path)
+        shape_mini[t] = SHAPE
+    return shape_mini
+
 
 
 states = cfeature.NaturalEarthFeature(
