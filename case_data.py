@@ -269,17 +269,18 @@ cases['20190911_KGRR'] = {'date':'20190911',
      'lonmax':-85.95,
      'latmax':43.30,
      'latmin':42.75,
-     'sat_extent' : [-87.25,-84.75,42.0,44.0],
+     'sat_extent' : [-86.9,-84.6,42.1,43.9],
      'start_latlon': (42.979,-85.722),
      'end_latlon': (42.917,-85.30),
      'start_time': '2019-09-11 23:40:23',
+     #'end_time': '2019-09-12 00:36:54',
      'end_time': '2019-09-12 00:06:54',
-     'pandas' : ('2019-09-11 23:15', 18, '5min'),
+     'pandas' : ('2019-09-11 23:10', 100, '1min'),
      'feature_follow': True,
-     'cutlist': ['00.50'],
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40','03.10'],
      'storm_motion': (278,46),
      'start_figures': 20190911231000,     
-     'end_figures': 20190912014000,
+     'end_figures': 20190912005000,
      'shapelist':['Lake_MI_counties','20190911_survey']
      }
 
@@ -318,6 +319,8 @@ cases['20190720_KGRBB'] = {'date':'20190720',
      'storm_motion': (277,55),
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
      }			
+
+
 
 #this_case = cases['eek']
 #this_case = cases['20190720_KGRBB']
