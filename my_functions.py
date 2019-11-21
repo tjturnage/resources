@@ -39,21 +39,21 @@ def wind_chill(t,s):
     #print(round(wc))
     return round(wc)
 
-def time_to_frostbite(wc,s):
+def time_to_frostbite(wc):
+    """
+    0 to -15        :   >30 minutes
+    -15 to -30      :   15 to 30 minutes
+    -30 to -50      :   <15 minutes
+    <  -50   :   < 5 minutes
+    """
     if wc >= -15:
         fbt = 4
     if wc < -15:
         fbt = 3
-    if wc < -35:
-        if s > 20:
-            fbt = 2
-        else:
-            fbt = 3
-    if wc < -45:
-        if s > 10:
-            fbt = 2
-        else:
-            fbt = 3
+    if wc < -30:
+        fbt = 2
+    if wc < -50:
+        fbt = 1
                 
     return fbt
 
@@ -128,11 +128,12 @@ def dtList_nbm(run_dt,bulletin_type,tz_shift):
     """
 
     fcst_hour_zero_utc = run_dt + timedelta(hours=0)
-    fcst_hour_zero_local = fcst_hour_zero_utc - timedelta(hours=tz_shift)
+    hr_shift = tz_shift + 1
+    fcst_hour_zero_local = fcst_hour_zero_utc - timedelta(hours=hr_shift)
+
     #pTime = pd.Timestamp(fcst_hour_zero_utc)
     pTime = pd.Timestamp(fcst_hour_zero_local)
     idx = pd.date_range(pTime, periods=27, freq='H')
-
     return idx, fcst_hour_zero_local
 
 
