@@ -291,7 +291,8 @@ cases['20190720_KGRB'] = {'date':'20190720',
      'latmax':46.65,
      'latmin':44.25,
      'sat_extent' : [-86.25,-84.75,42.0,43.25],
-     'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     #'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'pandas' : ('2019-07-20 00:10', 24, '5min'),
      'start_latlon': (45.685,-90.444),
      'end_latlon': (45.310,-89.325),
      'start_time': '2019-07-20 00:05:18',
@@ -300,6 +301,25 @@ cases['20190720_KGRB'] = {'date':'20190720',
      'cutlist': ['00.50','00.90','01.30','01.80'],
      'storm_motion': (305,50),
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
+     }
+
+cases['20190720_record_rain'] = {'date':'20190720',
+     'rda':'KGRR',
+     'lonmin':-93.5,
+     'lonmax':-89.25,
+     'latmax':46.65,
+     'latmin':44.25,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     #'pandas' : ('2019-07-04 20:15', 24, '5min'),
+     'pandas' : ('2019-07-20 00:20', 24, '10min'),
+     'start_latlon': (45.685,-90.444),
+     'end_latlon': (45.310,-89.325),
+     'start_time': '2019-07-20 00:05:18',
+     'end_time': '2019-07-20 01:08:30',
+     'feature_follow': False,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (305,50),
+     'shapelist':['Lake_MI_counties']
      }
 
 cases['20190720_KGRBB'] = {'date':'20190720',
@@ -320,10 +340,26 @@ cases['20190720_KGRBB'] = {'date':'20190720',
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
      }			
 
-
+cases['20191020_KFWS'] = {'date':'20190720',
+     'rda':'KFWS',
+     'lonmin':-100,
+     'lonmax':-95,
+     'latmax':35,
+     'latmin':30,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-10-20 22:30', 42, '5min'),
+     'start_latlon': (44.40,-90.142),
+     'end_latlon': (44.25,-88.325),
+     'start_time': '2019-10-20 22:30:00',
+     'end_time': '2019-10-21 02:00:00',
+     'feature_follow': False,
+     'cutlist': ['00.50','00.90','01.30','01.80'],
+     'storm_motion': (277,55),
+     'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
+     }	
 
 #this_case = cases['eek']
 #this_case = cases['20190720_KGRBB']
-this_case = cases['20190911_KGRR']
+this_case = cases['20190720_record_rain']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']

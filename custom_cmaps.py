@@ -81,6 +81,7 @@ cmaps['dkc_z'] = {'colors':colors,'position':position, 'min':-30,'max':80}
 colors=[(0,0,0),(12,250,250),(221,181,243),(238,186,248),(5,8,255),(14,22,255),(158,238,220),(119,244,154),(146,240,199),(3,239,0),(0,48,0),(87,124,85),(109,131,107),(138,110,124),(132,62,71),(93,2,3),(253,30,46),(253,155,156),(252,202,137),(255,255,0),(238,143,56),(238,143,56),(248,246,245),(248,246,245),(63,18,13),(63,18,13)]
 position=[0.0,0.001,0.1187,0.125,0.2437,0.25,0.3093,0.3125,0.3520,0.3541,0.4531,0.4583,0.4979,0.5,0.5395,0.5416,0.6406,0.6458,0.6854,0.6875,0.7468,0.75,0.8687,0.875,0.9937,1.0]
 cmaps['wdtd_v'] = {'colors':colors,'position':position, 'min':-120,'max':120}
+cmaps['rankine'] = {'colors':colors,'position':position, 'min':-3,'max':3}
 
 colors = [(0,0,0),(50,65,120),(55,70,130),(75,90,155),(100,120,180),(125,140,200),(175,200,250),(50,115,70),(75,135,90),(105,160,110),(130,180,135),(165,205,160),(225,225,225),(215,190,180),(190,150,130),(160,120,95),(135,85,55),(105,45,10),(240,160,140),(220,120,105),(195,80,70),(165,60,62),(135,55,55),(105,35,45)]
 position=[0.0,0.00001,0.05,0.1,0.15,0.2,0.25,0.255,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.745,0.75,0.8,0.85,0.9,0.95,1.0]
@@ -108,6 +109,29 @@ plts['Velocity'] = {'cmap':vel_cmap,'vmn':v['min'],'vmx':v['max'],'title':'Veloc
 plts['Vel'] = plts['Velocity']
 plts['SRV'] = plts['Velocity']
 
+#--- Rankine
+rank_colors=[(0,0,0),(12,250,250),(221,181,243),(238,186,248),(5,8,255),(14,22,255),(158,238,220),(119,244,154),(146,240,199),(3,239,0),(0,48,0),(87,124,85),(109,131,107),(138,110,124),(132,62,71),(93,2,3),(253,30,46),(253,155,156),(252,202,137),(255,255,0),(238,143,56),(238,143,56),(248,246,245),(248,246,245),(63,18,13),(63,18,13)]
+rank_position=[0.0,0.001,0.1187,0.125,0.2437,0.25,0.3093,0.3125,0.3520,0.3541,0.4531,0.4583,0.4979,0.5,0.5395,0.5416,0.6406,0.6458,0.6854,0.6875,0.7468,0.75,0.8687,0.875,0.9937,1.0]
+rankine_cmap=make_cmap(rank_colors, position=rank_position,bit=True)
+cmaps['rankine'] = {'colors':rank_colors,'position':rank_position, 'min':-3,'max':3}
+plt.register_cmap(cmap=rankine_cmap)
+plts['Rankine'] = {'cmap':rankine_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
+
+#--- Green to Brown
+gtb_colors=[(0,225,0),(215,215,215),(165,42,42)]
+gtb_position=[0.0,0.5,1.0]
+gtb_cmap=make_cmap(gtb_colors, position=gtb_position,bit=True)
+cmaps['gtb'] = {'colors':gtb_colors,'position':gtb_position, 'min':-3,'max':3}
+plt.register_cmap(cmap=gtb_cmap)
+plts['GTB'] = {'cmap':gtb_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
+
+#--- Green to Brown lighter
+gtb_light_colors=[(20,225,20),(255,255,255),(165,42,42)]
+gtb_light_position=[0.0,0.5,1.0]
+gtb_light_cmap=make_cmap(gtb_light_colors, position=gtb_light_position,bit=True)
+cmaps['gtb_light'] = {'colors':gtb_light_colors,'position':gtb_light_position, 'min':-3,'max':3}
+plt.register_cmap(cmap=gtb_light_cmap)
+plts['GTB_light'] = {'cmap':gtb_light_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
 
 #--- Spectrum Width
 sw_colors = [(0,0,0),(220,220,255),(180,180,240),(50,50,150),(255,255,0),(255,150,0),(255,0,0),(255,255,255)]
