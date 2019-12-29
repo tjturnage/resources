@@ -14,6 +14,7 @@ added the following for satellite-create-figures:
 """
 
 import os
+import sys
 import re
 import shutil
 import math
@@ -27,6 +28,20 @@ from operator import itemgetter
 from itertools import groupby
 import xarray as xr
 
+def set_paths():
+    try:
+        os.listdir('/usr/')
+        base_dir = 'C:/data'
+        gis_dir = os.path.join(base_dir,'GIS')
+        sys.path.append('/data/scripts/resources')
+        base_image_dir = os.path.join('/var/www/html/','images')
+    except:
+        base_dir = 'C:/data'
+        gis_dir = os.path.join(base_dir,'GIS')
+        base_image_dir = os.path.join(base_dir,'images')        
+        sys.path.append('C:/data/scripts/resources')
+
+    return base_image_dir,gis_dir
 
 def wind_chill(t,s):
     """
@@ -37,7 +52,10 @@ def wind_chill(t,s):
     """    
     wc = 35.74 + 0.6215*t - 35.75*(s**0.16) + 0.4275*t*(s**0.16)
     #print(round(wc))
-    return round(wc)
+    if wc <= t:
+        return round(wc)
+    else:
+        return round(t)
 
 def time_to_frostbite(wc):
     """
@@ -59,6 +77,7 @@ def time_to_frostbite(wc):
 
 def define_mosaic_size(products):
     mosaic_size = {}
+    mosaic_size[1] = {'h':6,'w':7,'rows':1,'columns':1}
     mosaic_size[2] = {'h':6,'w':15,'rows':1,'columns':2}
     mosaic_size[3] = {'h':6,'w':17,'rows':1,'columns':3}
     mosaic_size[4] = {'h':12,'w':14,'rows':2,'columns':2}
@@ -128,7 +147,7 @@ def dtList_nbm(run_dt,bulletin_type,tz_shift):
     """
 
     fcst_hour_zero_utc = run_dt + timedelta(hours=0)
-    hr_shift = tz_shift + 1
+    hr_shift = tz_shift
     fcst_hour_zero_local = fcst_hour_zero_utc - timedelta(hours=hr_shift)
 
     #pTime = pd.Timestamp(fcst_hour_zero_utc)
@@ -204,6 +223,71 @@ def add_radar_paths(file_dir,separator,code,met_info):
         met_info.append(info)
     return
 
+def latlon_from_radar_level3(f):
+    """
+    Convert radar bin radial coordinates to lat/lon coordinates.
+    Adapted from Brian Blaylock code
+    
+    Parameters
+    ----------
+          az : numpy array
+               All the radials for that particular product and elevation
+               Changes from 720 radials for super-res product cuts to 360 radials
+   elevation : float
+               The radar elevation slice in degrees. Needed to calculate range 
+               gate length (gate_len) as projected on the ground using simple
+               trigonometry. This is a very crude approximation that doesn't
+               factor for terrain, earth's curvature, or standard beam refraction.
+   num_gates : integer
+               The number of gates in a radial, which varies with 
+               elevation and radar product. That is why each product makes 
+               an individual call to this function. 
+   radar_lat : float
+               The latitude of the radar locations in decimal degrees
+   radar_lon : float
+               The longitude of the radar locations in decimal degrees
+                   
+    Returns
+    -------
+         lat : array like
+         lon : array like
+        back : I have no idea what this is for. I don't use it.
+                    
+    """
+
+    # Pull the data out of the file object
+    datadict = f.sym_block[0][0]
+
+    # Turn into an array, then mask
+    data = np.ma.array(datadict['data'])
+    data[data == 0] = np.ma.masked
+
+    # Grab azimuths and calculate a range based on number of gates
+    az = np.array(datadict['start_az'] + [datadict['end_az'][-1]])
+    rng = np.linspace(0, f.max_range, data.shape[-1] + 1)
+
+
+    #dnew2 = data.sortby('Azimuth')
+    #azimuths = dnew2.Azimuth.values
+    radar_lat = f.lat
+    radar_lon = f.lon
+
+    num_gates = len(rng)
+    rng = None
+    factor = math.cos(math.radians(0.5))
+
+    gate_len = 1000.0 * factor
+    #rng = np.arange(2125.0,(num_gates*gate_len + 2125.0),gate_len)
+    rng = np.arange(2125.0,(num_gates*gate_len + 2125.0),gate_len)
+    g = Geod(ellps='clrk66')
+    center_lat = np.ones([len(az),len(rng)])*radar_lat
+    center_lon = np.ones([len(az),len(rng)])*radar_lon
+    az2D = np.ones_like(center_lat)*az[:,None]
+    rng2D = np.ones_like(center_lat)*np.transpose(rng[:,None])
+    lat,lon,back=g.fwd(center_lon,center_lat,az2D,rng2D)
+    return lat,lon,back
+
+
 def latlon_from_radar(data):
     """
     Convert radar bin radial coordinates to lat/lon coordinates.
@@ -266,6 +350,8 @@ def make_radar_array(ds,ds_type):
     dnew2,lats,lons,back=latlon_from_radar(data)
     if ds_type == 'Ref':
         da = dnew2.ReflectivityQC
+    elif ds_type == 'Ref2':
+        da = dnew2.Reflectivity
     elif ds_type == 'Vel':
         da = dnew2.Velocity
     else:

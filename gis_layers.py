@@ -33,6 +33,8 @@ shapeDict['MI'] = {'type':'county','shape_dir':'counties_mi','file':'counties_MI
 shapeDict['CO'] = {'type':'county','shape_dir':'counties_co','file':'counties_CO.shp'}
 shapeDict['KS'] = {'type':'county','shape_dir':'counties_ks','file':'counties_KS.shp'}
 shapeDict['MO'] = {'type':'county','shape_dir':'counties_mo','file':'counties_MO.shp'}
+shapeDict['OH'] = {'type':'county','shape_dir':'counties_oh','file':'counties_OH.shp'}
+shapeDict['IL'] = {'type':'county','shape_dir':'counties_il','file':'counties_IL.shp'}
 shapeDict['IN'] = {'type':'county','shape_dir':'counties_in','file':'counties_IN.shp'}
 shapeDict['WI'] = {'type':'county','shape_dir':'counties_wi','file':'counties_WI.shp'}
 shapeDict['SD'] = {'type':'county','shape_dir':'counties_sd','file':'counties_SD.shp'}
@@ -71,8 +73,19 @@ def make_shapes():
     return shape_mini
 
 def make_shapes_mi():
+    shape_michigan = {}
+    shape = shapeDict['MI']
+    shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
+    print(shape_path)
+    SHAPE = get_shapefile(shape_path)
+    shape_michigan['MI'] = SHAPE
+    return shape_michigan
+
+
+def make_states():
+    shapelist = ['MI','WI','IN','IL']
     shape_mini = {}
-    for t in ['MI']:
+    for t in shapelist:
         shape = shapeDict[t]
         shape_type = shape['type']
         if shape_type == 'county':
@@ -86,7 +99,9 @@ def make_shapes_mi():
         shape_mini[t] = SHAPE
     return shape_mini
 
-
+shape_states = make_states()
+shape_michigan = make_shapes_mi()
+shape_mini = make_shapes()
 
 states = cfeature.NaturalEarthFeature(
         category='cultural',

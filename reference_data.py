@@ -23,28 +23,40 @@ state2timezone = { 'AK': 'US/Alaska', 'AL': 'US/Central', 'AR': 'US/Central', 'A
                   'VT': 'US/Eastern', 'WA': 'US/Pacific', 'WI': 'US/Central',
                   'WV': 'US/Eastern', 'WY': 'US/Mountain', '' : 'US/Pacific', '--': 'US/Pacific' }
 
-time_shift_dict = {'US/Eastern':4,'US/Central':5,'US/Mountain':6,'US/Pacific':7,'US/Hawaii':7,
-                   'US/Alaska':8,'Pacific/Guam':9, 'America/Puerto_Rico':3,'America/Virgin':3}
+# Daylight time commented out
+#time_shift_dict = {'US/Eastern':4,'US/Central':5,'US/Mountain':6,'US/Pacific':7,'US/Hawaii':7,
+#                   'US/Alaska':8,'Pacific/Guam':9, 'America/Puerto_Rico':3,'America/Virgin':3}
 
-def nbm_station_dict():
-    fin = 'C:/data/scripts/NBM/NBM_stations.txt'
-    station_master = {}
-    with open(fin,'r') as src:
-        for line in src:
-            elements = line.split(',')
-            station_id = str(elements[0])
-            station_name = str(elements[1])
-            state = str(elements[2])
-            if state in state2timezone.keys():
-                lat = float(elements[3])
-                lon = float(elements[4])
-                utc_shift = time_shift_dict[state2timezone[state]]
-                #print(station,state,lat,lon,time_shift_dict[utc_shift])
-                #station_info[station] = ([('state', state) , ('utc_shift', time_shift_dict[utc_shift]) ,('lat', lat) , ('lon' , 20)] )
-                #station_master[station] = ([('state',state),('time_shift',utc_shift),('lat',lat),('lon',lon)])
-                station_master[station_id] = ({'name':station_name,'state':state,'time_shift':utc_shift,'lat':lat,'lon':lon})
+time_shift_dict = {'US/Eastern':5,'US/Central':6,'US/Mountain':7,'US/Pacific':8,'US/Hawaii':9,
+                   'US/Alaska':9,'Pacific/Guam':10, 'America/Puerto_Rico':4,'America/Virgin':4}
+
+import os
+import sys
+
+def set_paths():
     
-            else:
-                utc_shift = 0
-        
-        return station_master
+    try:
+        os.listdir('/usr')
+        windows = False
+
+        data_dir = '/data'
+        scripts_dir = os.path.join(data_dir,'scripts')
+        sys.path.append(os.path.join(scripts_dir,'resources'))
+        image_dir = os.path.join('/var/www/html','images')
+        archive_dir = os.path.join(image_dir,'archive')
+        gis_dir = os.path.join(data_dir,'GIS')
+        py_call = '/usr1/anaconda3/bin/python '
+
+    except:
+        windows = True
+
+        data_dir = 'C:/data'    
+        scripts_dir = os.path.join(data_dir,'scripts')
+        sys.path.append(os.path.join(scripts_dir,'resources'))
+        image_dir = os.path.join(data_dir,'images')
+        archive_dir = os.path.join(data_dir,'archive')
+        gis_dir = os.path.join(data_dir,'GIS')
+        py_call = '/usr1/anaconda3/bin/python '
+    
+    return data_dir,image_dir,archive_dir,gis_dir,py_call
+

@@ -162,6 +162,13 @@ azdv_position = [0, 0.001, 0.3, 0.43, 0.5, 0.57, 0.7, 0.999, 1]
 azdv_cmap=make_cmap(azdv_colors, position=azdv_position)
 plt.register_cmap(cmap=azdv_cmap)
 
+#--- Rankine AzShear
+azrank_colors = [(0.3,0.3,1),(1,0.3,0.3)]
+azrank_position = [0,1]
+azrank_cmap=make_cmap(azrank_colors, position=azrank_position)
+plt.register_cmap(cmap=azrank_cmap)
+plts['AzRank'] = {'cmap':azrank_cmap,'vmn':-2,'vmx':2,'title':'AzRank','cbticks':[0],'cblabel':'s $\mathregular{^-}{^1}$'}
+
 #--- Azimuthal Shear / Div Shear Reversed -- 
 #--- this makes convergence (i.e., negative divergence) more intuitive to visualize
 azdv_colors_r = [(1,1,1),(1,1,1),(1,0,0),(0.7,0,0),(0,0,0),(0,0,0.7),(0,0,1),(1,1,1),(1,1,1)]
