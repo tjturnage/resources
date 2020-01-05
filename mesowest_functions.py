@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Dec 28 20:39:16 2019
 
-@author: tjtur
+05 Jan 2020: Now importing API_TOKEN for privacy since data are proprietary
+
+             Learn more about setting up your own account at:
+                 https://synopticdata.com/
+
+
 """
 
 import os
 import sys
+import math
 import requests
 from datetime import datetime, timedelta
 
@@ -35,20 +40,15 @@ shortDict = {'air_temp_value_1':'t',
              'wind_gust_value_1':'wgst',
              'visibility_value_1':'vis'}
 
-#class Mesowest():
-#    def __init__(self,timeStr):
-#
-#
-#        def str_to_fl(string):
-#            """
-#            Takes string as input and attempts to convert to float.
-#            If unsuccessful, returns 'NA' string
-#            """
-#            try:
-#                return float(string)
-#            except:
-#                return 'NA'
-        
+stnDict2 = {'t':{'threshold':100,'color':'200 100 100','position':'-17,13, 1,'},
+          'dp':{'threshold':100,'color':'0 255 0','position':'-17,-13, 1,'},
+          'wspd':{'threshold':500,'color':'255 255 255','position':'NA'},
+          'wdir':{'threshold':500,'color':'255 255 255','position':'NA'},
+          'wgst':{'threshold':300,'color':'255 255 255','position':'NA'},
+          'vis':{'threshold':125,'color':'180 180 255','position':'17,-13, 1,'},
+          'rt':{'threshold':125,'color':'255 255 0','position':'17,13, 1,'}}
+
+   
 def str_to_fl(string):
     """
     Takes string as input and attempts to convert to float.
@@ -226,6 +226,13 @@ def mesowest_data_from_latest_observation(dataframe,pd_time,station):
     except:
         return None
 
+def mesowest_get_nearest_time_data(timeStr):
+    api_arguments = {"token":API_TOKEN,"state":"mi","network":"1,2,71,96,162,3001", "vars": varStr, "units": unitsStr, 'attime': timeStr, 'within':'30' }
+    api_request_url = os.path.join(API_ROOT, "stations/nearesttime")
+    req = requests.get(api_request_url, params=api_arguments)
+    jas = req.json()
+    return jas
+
 def timeShift(dt,num):
     times = []
     origTime = datetime.strptime(dt,'%Y%m%d%H%M')
@@ -288,6 +295,23 @@ def placefileWindSpeedCode(wspd):
     
     
 def windDir(wdir):
+    """
+    Returns the proper code for plotting wind speeds in a GR2Analyst placefile. 
+    This code is then used for the placefile IconFile method described at:
+        http://www.grlevelx.com/manuals/gis/files_places.htm
+    
+    Parameters
+    ----------
+               wspd : string
+                      wind speed in knots
+                                        
+    Returns
+    -------
+               code : string
+                      string of number to be used to reference placefile icon
+
+    """
+
     wd = int(wdir)
     if wd < 20:
         wc = 'N'    
@@ -310,194 +334,82 @@ def windDir(wdir):
 
     return wd,wc        
 
-def convertVal(num,short):
-    """
-    converts units based on variable type
-    Probably needs to be replaced by metpy methods at some point
-    """
+
+
+def convert_met_values(num,short):
     numfloat = float(num)
     if (num != 'NA' ):
         if (short == 't') or (short == 'dp') or (short == 'rt'):
-            new = (numfloat * 9.0/5.0) + 32.0
-            newStr = '" ' + str(int(round(new))) + ' "'
-        elif short == 'vis':
-            new = numfloat
+            new = int(round(numfloat))
+            newStr = '" ' + str(new) + ' "'
+            textInfo = buildObject(newStr,short)
+        elif short == 'wgst':
+            new = int(round(numfloat,1))
             newStr = '" ' + str(new) + ' "'        
-        elif short == 'wspd':
-            scratch = numfloat * 1.944
-            new = placefileWindSpeedCode(scratch)
+            textInfo = buildObject(newStr,short)
             newStr = str(new)
+        elif short == 'vis':
+            #print (numfloat)
+            final = '10'
+            if numfloat < 6.5:
+                final = str(int(round(numfloat)))
+            if numfloat <= 2.75:
+                final = '2 3/4'
+            if numfloat <= 2.50:
+                final = '2 1/2'                
+            if numfloat <= 2.25:
+                final = '2 1/4'
+            if numfloat <= 2.0:
+                final = '2'
+            if numfloat <= 1.75:
+                final = '1 3/4'                 
+            if numfloat <= 1.50:
+                final = '1 1/2'                 
+            if numfloat <= 1.25:
+                final = '1 1/4'
+            if numfloat <= 1.00:
+                final = '1'
+            if numfloat <= 0.75:
+                final = '3/4'                   
+            if numfloat <= 0.50:
+                final = '1/2'
+            if numfloat <= 0.25:
+                final = '1/4'
+            if numfloat <= 0.125:
+                final = '1/8'
+            if numfloat == 0.0:
+                final = ''
+            newStr = '" ' + final + ' "'        
+            textInfo = buildObject(newStr,short)
+        elif short == 'wspd':
+            new = placefileWindSpeedCode(numfloat)
+            newStr = str(new)
+            textInfo = 'ignore'
         elif short == 'wdir':
             new = int(num)
             newStr = str(new)
+            textInfo = 'ignore'
 
-        return newStr, new
+        return newStr, textInfo
 
+def gustObj(wdir, wgst, short):
+    wgstInt = int(wgst)
+    newStr = '" ' + str(wgstInt) + ' "'
+    direction = int(wdir)
+    distance = 35
+    x = math.sin(math.radians(direction)) * distance
+    y = math.cos(math.radians(direction)) * distance
+    loc = str(int(x)) + ',' + str(int(y)) + ',1,'
+    threshLine = 'Threshold: ' + str(stnDict2[short]['threshold']) + '\n'
+    colorLine = '  Color: ' + str(stnDict2[short]['color']) + '\n'
+    position = '  Text: ' + loc + newStr + ' \n'
+    textInfo = threshLine + colorLine + position
+    return textInfo
 
-"""
-class Mesowest:
-    def __init__(self, radar, timeStr,stid, elements, units, archive=False):
+def buildObject(newStr,short):
+    threshLine = 'Threshold: ' + str(stnDict2[short]['threshold']) + '\n'
+    colorLine = '  Color: ' + str(stnDict2[short]['color']) + '\n'
+    position = '  Text: ' + str(stnDict2[short]['position']) + newStr + '\n'
+    textInfo = threshLine + colorLine + position
+    return textInfo
 
-        self.timeStr = timeStr
-        self.stid = stid
-        self.radar = radar
-        self.elements = elements
-        
-        API_ROOT = "https://api.synopticdata.com/v2/"
-        API_TOKEN = "292d36a692d74badb6ca011f4413ae1b"
-
-        placeHead = 'Title: Mesowest Obs ' + timeStr + '\nRefresh: 2\nColor: 255 200 255\n \
-        IconFile: 1, 18, 32, 2, 31, "https://mesonet.agron.iastate.edu/request/grx/windbarbs.png" \n \
-        IconFile: 2, 15, 15, 8, 8, "https://mesonet.agron.iastate.edu/request/grx/cloudcover.png"\n \
-        IconFile: 3, 25, 25, 12, 12, "https://mesonet.agron.iastate.edu/request/grx/rwis_cr.png"\n \
-        Font: 1, 14, 1, "Arial"\n\n'
-
-        shortDict = {'air_temp_value_1':'t',
-                     'dew_point_temperature_value_1d':'dp',
-                     'wind_speed_value_1':'wspd',
-                     'wind_direction_value_1':'wdir',
-                     'wind_gust_value_1':'wgst',
-                     'visibility_value_1':'vis'}
-
-
-        stnDict2 = {'t':{'threshold':100,'color':'200 100 100','position':'-17,13, 1,'},
-                  'dp':{'threshold':100,'color':'0 255 0','position':'-17,-13, 1,'},
-                  'wspd':{'threshold':500,'color':'255 255 255','position':'NA'},
-                  'wdir':{'threshold':500,'color':'255 255 255','position':'NA'},
-                  'wgst':{'threshold':300,'color':'255 255 255','position':'NA'},
-                  'vis':{'threshold':125,'color':'180 180 255','position':'17,-13, 1,'},
-                  'rt':{'threshold':125,'color':'255 255 0','position':'17,13, 1,'}}
-        
-        nowTime = datetime.utcnow()
-        time_str = datetime.strftime(nowTime,'%Y%m%d%H%M')
-
-
-
-        if archive:
-            api_arguments = {"token":API_TOKEN,"state":"mi","network":"1,2,71,96,162,3001", "vars": elements, "units": units, 'attime': time_str, 'within':'30' }
-            #api_arguments = {"token":API_TOKEN,"cwa":"bmx", "vars": varStr, "units": unitsStr, 'attime': timeStr, 'within':'40' }
-            api_request_url = os.path.join(API_ROOT, "stations/nearesttime")
-        else:
-            api_arguments = {"token":API_TOKEN,"stid":stid, "vars": elements, "units": units}
-            api_request_url = os.path.join(API_ROOT, "stations/latest")
-    
-        req = requests.get(api_request_url, params=api_arguments)
-        jas = req.json()
-
-
-        self.wdir = jas['STATION'][0]['OBSERVATIONS']['wind_direction_value_1']['value']
-        self.wspd = jas['STATION'][0]['OBSERVATIONS']['wind_speed_value_1']['value']
-        self.lat = jas['STATION'][0]['LATITUDE']
-        self.lon = jas['STATION'][0]['LONGITUDE']
-        self.wind_str = f'{self.wdir:.0f}/{self.wspd:.0f}'
-        self.archive_fname = radar + '_' + time_str + '.png'
-        self.archive_fpath = os.path.join(archive_dir,self.archive_fname)
-        self.current_fname = radar + '.png'
-        self.current_fpath = os.path.join(image_dir,self.current_fname)
-
-        self.cmd_str = py_call + vwp_script_path + ' ' + radar + ' -s ' + self.wind_str + ' -f ' + self.archive_fpath + ' -x'
-
-
-
-        def timeShift(dt,num):
-            times = []
-            origTime = datetime.strptime(dt,'%Y%m%d%H%M')
-            steps = int(num)
-            for x in range(0,steps):
-                mins = x * 15
-                origTime = origTime + timedelta(minutes=mins)
-                forTime = origTime + timedelta(minutes=15)
-                origStr = datetime.strftime(origTime, '%Y%m%d%H%M.txt')
-                orig = datetime.strftime(origTime, '%Y-%m-%dT%H:%M:%SZ')
-                forward = datetime.strftime(forTime, '%Y-%m-%dT%H:%M:%SZ')
-                times.append([origStr,orig,forward])
-            return times
-
-        @classmethod
-        def vwp(cls,wdir,wspd,radar,stid):
-            nowTime = datetime.utcnow()
-            time_str = datetime.strftime(nowTime,'%Y%m%d%H%M')
-            cls.obtime_str = time_str
-            cls.wdir = wdir
-            cls.wspd = wspd        
-            cls.stid = stid
-            cls.radar = radar
-            cls.elements = 'wind_speed,wind_direction,wind_gust'
-            cls.units = 'speed|kts,precip|in'
-    
-    
-    
-            @classmethod
-            def placefileWindSpeedCode(cls,wspd):
-                speed = float(wspd)
-                if speed > 52:
-                    code = '11'
-                elif speed > 47:
-                    code = '10'
-                elif speed > 42:
-                    code = '9'
-                elif speed > 37:
-                    code = '8'
-                elif speed > 32:
-                    code = '7'
-                elif speed > 27:
-                    code = '6'
-                elif speed > 22:
-                    code = '5'
-                elif speed > 17:
-                    code = '4'
-                elif speed > 12:
-                    code = '3'
-                elif speed > 7:
-                    code = '2'
-                elif speed > 2:
-                    code = '1'
-                else:
-                    code = '1'
-                
-                return code
-        
-            @classmethod    
-            def windDir(cls,wdir):
-                wd = int(wdir)
-                if wd < 20:
-                    wc = 'N'    
-                elif wd < 75:
-                    wc = 'NE'
-                elif wd < 115:
-                    wc = 'E'
-                elif wd < 155:
-                    wc = 'SE'
-                elif wd < 200:
-                    wc = 'S'
-                elif wd < 250:
-                    wc = 'SW'
-                elif wd < 290:
-                    wc ='W'
-                elif wd < 340:
-                    wc = 'NW'
-                else:
-                    wc = 'N'
-            
-                return wd,wc        
-    
-            @classmethod 
-            def convertVal(cls,num,short):
-                numfloat = float(num)
-                if (num != 'NA' ):
-                    if (short == 't') or (short == 'dp') or (short == 'rt'):
-                        new = (numfloat * 9.0/5.0) + 32.0
-                        newStr = '" ' + str(int(round(new))) + ' "'
-                    elif short == 'vis':
-                        new = numfloat
-                        newStr = '" ' + str(new) + ' "'        
-                    elif short == 'wspd':
-                        scratch = numfloat * 1.944
-                        new = placefileWindSpeedCode(scratch)
-                        newStr = str(new)
-                    elif short == 'wdir':
-                        new = int(num)
-                        newStr = str(new)
-            
-                    return newStr, new
-"""
