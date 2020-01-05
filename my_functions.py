@@ -1,15 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Jun 18 09:33:56 2019
-Updated: 10/21/19
 
-added the following for dynamic creation of figure sizes:
-- define_mosaic_size
-
-added the following for satellite-create-figures:
-- add_radar_paths
-- make_radar_array
-- ltg_plot
 
 """
 
@@ -28,10 +19,30 @@ from operator import itemgetter
 from itertools import groupby
 import xarray as xr
 
+def timeShift(timeStr,num,dt,direction):
+    times = []
+    steps = int(num)
+    minStart = int(steps * dt)
+    initTime = datetime.strptime(timeStr,'%Y%m%d%H%M')
+    if direction == 'backward':
+        origTime = initTime - timedelta(minutes=minStart)
+    else:
+        origTime = initTime   
+
+    for x in range(0,steps):
+        mins = x * dt
+        newTime = origTime + timedelta(minutes=mins)
+        nextTime = newTime + timedelta(minutes=dt)
+        newStr = datetime.strftime(newTime, '%Y%m%d%H%M')
+        new = datetime.strftime(newTime, '%Y-%m-%dT%H:%M:%SZ')
+        nextTimeStr = datetime.strftime(nextTime, '%Y-%m-%dT%H:%M:%SZ')
+        times.append([newStr,new,nextTimeStr])
+    return times
+
 def set_paths():
     try:
         os.listdir('/usr/')
-        base_dir = 'C:/data'
+        base_dir = '/data'
         gis_dir = os.path.join(base_dir,'GIS')
         sys.path.append('/data/scripts/resources')
         base_image_dir = os.path.join('/var/www/html/','images')
@@ -41,7 +52,43 @@ def set_paths():
         base_image_dir = os.path.join(base_dir,'images')        
         sys.path.append('C:/data/scripts/resources')
 
-    return base_image_dir,gis_dir
+    return base_dir,base_image_dir,gis_dir
+
+def latest_file(df, new_datetime,dtype):
+    """
+    Determines the filepath corresponding to the most recent time for a particular data type
+    in a dataframe
+    
+    Parameters
+    ----------
+                 df : pandas dataframe 
+                      contains paths to meteorological data 
+
+       new_datetime : numpy datetime at which to perform dataframe slice
+                      obtained from df based on provided time range and data type 
+
+              dtype : string 
+                      type of data to slice from dataframe. Typical values:
+                       r   -  radar reflectivity
+                       v   -  radar velocity
+                       s   -  satellite
+                       g   -  glm
+                      vis  -  hi res visible satellite 
+                                          
+    Returns
+    -------
+          data_path : string
+                      absolute filepath of latest product in the time range
+                      The 'new_data.file_path.max()' method is a sneaky and
+                      non-intuitive way to obtain the newest possible product
+                      in the slice
+ 
+    """
+    time_slice = (df.index < new_datetime)
+    data_slice = (df.data_type == dtype)
+    new_data = df[(time_slice) & (data_slice)][-1:]
+    data_path = new_data.file_path.max()
+    return data_path
 
 def wind_chill(t,s):
     """
@@ -91,9 +138,10 @@ def define_mosaic_size(products):
 
 
 def categorize(data_list,element):
-    """dat
- [0,1,2,3,4,5,6],'major_yticks_labels':['0.00','0.01','0.05','0.10','0.2','0.3','0.5'], 
-        zr_list   : one hourly snow in hundredths
+    """
+    Categorizes different weather elements based on
+    dictionaries for each element. This is to make plots
+    of NBM text bulletins more clear.
     
     """
 
@@ -195,7 +243,8 @@ def create_process_file_list(src_dir,product_list,cut_list,windows):
 def add_radar_paths(file_dir,separator,code,met_info):
     """
     Build list of file paths to use for radar data
-    This is commonly called from 'sat-the-final-chapter' with creating radar/satellite mosaic combos
+    This is commonly called from 'satellite-create-figures'
+    with creating satellite mosaics that include radar plots
     
     Parameters
     ----------
@@ -512,7 +561,7 @@ def calc_srv(da_v,storm_dir,storm_speed):
     Parameters
     ----------
                    da_v : xarray
-                          velocity velocity data array that will be recalculated
+                          velocity data array that will be recalculated
               storm_dir : float
                           storm motion direction in compass degrees
             storm_speed : integer or float
@@ -563,6 +612,7 @@ def figure_timestamp(dt):
     fig_title_timestring = datetime.strftime(t, "%d %b %Y  -  %H:%M:%S %Z")
     fig_filename_timestring = datetime.strftime(t, "%Y%m%d-%H%M%S")
     return fig_title_timestring,fig_filename_timestring
+
 
 def build_html(image_dir):
     im_dir = pathlib.PurePath(image_dir)
@@ -722,30 +772,3 @@ def plot_settings():
     plt.rc('figure', titlesize=20)  # fontsize of the figure title
     return
 
-class GridShader():
-    def __init__(self, ax, first=True, **kwargs):
-        self.spans = []
-        self.sf = first
-        self.ax = ax
-        self.kw = kwargs
-        self.ax.autoscale(False, axis="x")
-        self.cid = self.ax.callbacks.connect('xlim_changed', self.shade)
-        self.shade()
-    def clear(self):
-        for span in self.spans:
-            try:
-                span.remove()
-            except:
-                pass
-    def shade(self, evt=None):
-        self.clear()
-        xticks = self.ax.get_xticks()
-        xlim = self.ax.get_xlim()
-        xticks = xticks[(xticks > xlim[0]) & (xticks < xlim[-1])]
-        locs = np.concatenate(([[xlim[0]], xticks, [xlim[-1]]]))
-
-        start = locs[1-int(self.sf)::2]  
-        end = locs[2-int(self.sf)::2]
-
-        for s, e in zip(start, end):
-            self.spans.append(self.ax.axvspan(s, e, zorder=0, **self.kw))
