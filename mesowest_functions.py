@@ -26,7 +26,7 @@ vwp_script_path = os.path.join(scripts_dir,'vad-plotter-master','vad.py')
 varStr = 'air_temp,dew_point_temperature,wind_speed,wind_direction,wind_gust,visibility,road_temp'
 unitsStr = 'temp|F,speed|kts,precip|in'  
 API_ROOT = "https://api.synopticdata.com/v2/"
-API_TOKEN = "292d36a692d74badb6ca011f4413ae1b"
+from mesowest_api_token import API_TOKEN
 
 shortDict = {'air_temp_value_1':'t',
              'dew_point_temperature_value_1d':'dp',
