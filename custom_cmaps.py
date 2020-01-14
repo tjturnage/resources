@@ -58,12 +58,14 @@ def make_cmap(colors, position=None, bit=False):
         cdict['green'].append((pos, color[1], color[1]))
         cdict['blue'].append((pos, color[2], color[2]))
 
+
     cmap = mpl.colors.LinearSegmentedColormap('my_colormap',cdict,256)
     return cmap
 
 import matplotlib as mpl
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.colors import ListedColormap
 import sys
 #from metpy.plots import colortables
 
@@ -87,11 +89,17 @@ colors = [(0,0,0),(50,65,120),(55,70,130),(75,90,155),(100,120,180),(125,140,200
 position=[0.0,0.00001,0.05,0.1,0.15,0.2,0.25,0.255,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.745,0.75,0.8,0.85,0.9,0.95,1.0]
 cmaps['dkc_v'] = {'colors':colors,'position':position, 'min':-100,'max':100}
 
-colors=[(0,0,0),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
+#colors=[(0,0,0),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
+colors=[(255,255,255),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
 position=[0.0,0.407,0.409,0.452,0.454,0.587,0.590,0.632,0.636,0.722,0.727,0.812,0.818,0.902,0.909,0.947,0.954,0.992,1.0]
 cmaps['wdtd_z'] = {'colors':colors,'position':position, 'min':-30,'max':80}
 
-z = cmaps['wdtd_z']
+colors=[(255,255,255),(255,255,255),(200,200,200),(155,155,155),(90,90,90)]
+#colors=[(255,255,255),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
+position=[0.0, 45/110, 75/110, 90/110, 1]
+cmaps['wdtd_bw'] = {'colors':colors,'position':position, 'min':-30,'max':80}
+
+z = cmaps['wdtd_bw']
 v = cmaps['wdtd_v']
 
 vel_max = 100
@@ -163,11 +171,20 @@ azdv_cmap=make_cmap(azdv_colors, position=azdv_position)
 plt.register_cmap(cmap=azdv_cmap)
 
 #--- Rankine AzShear
-azrank_colors = [(0.3,0.3,1),(1,0.3,0.3)]
-azrank_position = [0,1]
+azrank_colors = [(0,1,0),(0.8,1,0.8),(1,1,1),(1,1,1),(1,1,1),(1,0.8,0.8),(1,0,0)]
+azrank_position = [0,0.2,0.35,0.5,0.65,0.8,1]
 azrank_cmap=make_cmap(azrank_colors, position=azrank_position)
 plt.register_cmap(cmap=azrank_cmap)
 plts['AzRank'] = {'cmap':azrank_cmap,'vmn':-2,'vmx':2,'title':'AzRank','cbticks':[0],'cblabel':'s $\mathregular{^-}{^1}$'}
+
+#--- Rankine AzShear Gray
+gr = 4/5
+azrank_gray_colors = [(0,1,0),(0.8,1,0.8),(gr,gr,gr),(gr,gr,gr),(gr,gr,gr),(1,0.8,0.8),(1,0,0)]
+azrank_gray_position = [0,0.2,0.35,0.5,0.65,0.8,1]
+azrank_gray_cmap=make_cmap(azrank_gray_colors, position=azrank_gray_position)
+plt.register_cmap(cmap=azrank_cmap)
+plts['AzRankGray'] = {'cmap':azrank_gray_cmap,'vmn':-2,'vmx':2,'title':'AzRank_Gray','cbticks':[0],'cblabel':'s $\mathregular{^-}{^1}$'}
+
 
 #--- Azimuthal Shear / Div Shear Reversed -- 
 #--- this makes convergence (i.e., negative divergence) more intuitive to visualize

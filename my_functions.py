@@ -5,7 +5,6 @@
 """
 
 import os
-import sys
 import re
 import shutil
 import math
@@ -19,7 +18,38 @@ from operator import itemgetter
 from itertools import groupby
 import xarray as xr
 
-def timeShift(timeStr,num,dt,direction):
+def timeShift(timeStr,num,dt,direction='backward',api='mesowest'):
+    """
+    Returns list of timestrings associated with a list of time intervals
+    
+    Parameters
+    ----------
+          timeStr : string
+                    'YYYYmmddHHMM' format
+              num : integer
+                    number of time steps
+               dt : integer
+                    number of minutes per step
+        direction : string
+                    'backward'       - step back in time from timeStr
+                    <anything else>  - step forward in time from timeStr
+              api : string
+                    'mesowest'       - format needed for mesowest api request
+                                       Example: '2020-01-10T06:35:12Z'
+                                        
+                    'mping'          - format needed for mping api request
+                                       Example: '2020-01-10 06:35:12'
+            
+    Returns
+    -------
+            times : list
+                    list of time intervals. These intervals contain 3 elements:
+                    - interval start time string as 'YYYYmmddHHMM'
+                    - interval start time string using either mesowest or mping format
+                    - interval end time string using either mesowest or mping format                    
+                                
+        
+    """
     times = []
     steps = int(num)
     minStart = int(steps * dt)
@@ -34,25 +64,15 @@ def timeShift(timeStr,num,dt,direction):
         newTime = origTime + timedelta(minutes=mins)
         nextTime = newTime + timedelta(minutes=dt)
         newStr = datetime.strftime(newTime, '%Y%m%d%H%M')
-        new = datetime.strftime(newTime, '%Y-%m-%dT%H:%M:%SZ')
-        nextTimeStr = datetime.strftime(nextTime, '%Y-%m-%dT%H:%M:%SZ')
+        if api == 'mesowest':
+            new = datetime.strftime(newTime, '%Y-%m-%dT%H:%M:%SZ')
+            nextTimeStr = datetime.strftime(nextTime, '%Y-%m-%dT%H:%M:%SZ')
+        else:
+            new = datetime.strftime(newTime, '%Y-%m-%d %H:%M:%S')
+            nextTimeStr = datetime.strftime(nextTime, '%Y-%m-%d %H:%M:%S')            
         times.append([newStr,new,nextTimeStr])
     return times
 
-def set_paths():
-    try:
-        os.listdir('/usr/')
-        base_dir = '/data'
-        gis_dir = os.path.join(base_dir,'GIS')
-        sys.path.append('/data/scripts/resources')
-        base_image_dir = os.path.join('/var/www/html/','images')
-    except:
-        base_dir = 'C:/data'
-        gis_dir = os.path.join(base_dir,'GIS')
-        base_image_dir = os.path.join(base_dir,'images')        
-        sys.path.append('C:/data/scripts/resources')
-
-    return base_dir,base_image_dir,gis_dir
 
 def latest_file(df, new_datetime,dtype):
     """
@@ -757,6 +777,35 @@ def ltg_plot(highlow,ltg,a):
             a.scatter(lon,lat,s=size,marker=symb,c=col,zorder=zord)
             a.set_title('EN Intracloud')
     return
+
+
+class GridShader():
+    def __init__(self, ax, first=True, **kwargs):
+        self.spans = []
+        self.sf = first
+        self.ax = ax
+        self.kw = kwargs
+        self.ax.autoscale(False, axis="x")
+        self.cid = self.ax.callbacks.connect('xlim_changed', self.shade)
+        self.shade()
+    def clear(self):
+        for span in self.spans:
+            try:
+                span.remove()
+            except:
+                pass
+    def shade(self, evt=None):
+        self.clear()
+        xticks = self.ax.get_xticks()
+        xlim = self.ax.get_xlim()
+        xticks = xticks[(xticks > xlim[0]) & (xticks < xlim[-1])]
+        locs = np.concatenate(([[xlim[0]], xticks, [xlim[-1]]]))
+
+        start = locs[1-int(self.sf)::2]  
+        end = locs[2-int(self.sf)::2]
+
+        for s, e in zip(start, end):
+            self.spans.append(self.ax.axvspan(s, e, zorder=0, **self.kw))
 
 def plot_settings():
     SMALL_SIZE = 8
