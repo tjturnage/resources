@@ -229,6 +229,23 @@ def mesowest_data_from_latest_observation(dataframe,pd_time,station):
         return None
 
 def mesowest_get_nearest_time_data(timeStr):
+    """
+    Returns data from the mesowest API corresponding to the nearest available
+    time associated with a time string.
+    
+    Parameters
+    ----------
+            timeStr : string
+                      format is YYYYmmDDHHMM (ex. 202002290630)
+                                        
+    Returns
+    -------
+               code : json file
+                      observational data
+    
+    Future work - pass api_arguments to function instead of hard-wiring
+
+    """
     api_arguments = {"token":API_TOKEN,"state":"mi","network":"1,2,71,96,162,3001", "vars": varStr, "units": unitsStr, 'attime': timeStr, 'within':'30' }
     api_request_url = os.path.join(API_ROOT, "stations/nearesttime")
     req = requests.get(api_request_url, params=api_arguments)
@@ -264,7 +281,7 @@ def placefileWindSpeedCode(wspd):
     Returns
     -------
                code : string
-                      string of number to be used to reference placefile icon
+                      string of integer to be used to reference placefile icon
 
     """
     speed = float(wspd)
@@ -310,7 +327,7 @@ def windDir(wdir):
     Returns
     -------
                code : string
-                      string of number to be used to reference placefile icon
+                      string of integer to be used to reference placefile icon
 
     """
 
