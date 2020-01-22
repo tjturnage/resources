@@ -15,37 +15,44 @@ import cartopy.io.shapereader as shpreader
 
 
 try:
-    os.listdir('/var/www')
+    os.listdir('/usr')
     base_gis_dir = '/data/GIS'
 except:
     base_gis_dir = 'C:/data/GIS'
 
 
-
+county_dir = 'counties'
 
 shapeDict = {}
 #shapeDict['ND'] = {'shape_dir':'counties_nd','file':'counties_ND.shp','shape_name':'COUNTIES_ND'}
 #shapeDict['MN'] = {'shape_dir':'counties_mn','file':'counties_MN.shp','shape_name':'COUNTIES_MN'}
 #shapeDict['MI'] = {'shape_dir':'counties_mi','file':'counties_MI.shp','shape_name':'COUNTIES_MI'}
-shapeDict['ND'] = {'type':'county','shape_dir':'counties_nd','file':'counties_ND.shp'}
-shapeDict['MN'] = {'type':'county','shape_dir':'counties_mn','file':'counties_MN.shp'}
-shapeDict['MI'] = {'type':'county','shape_dir':'counties_mi','file':'counties_MI.shp'}
-shapeDict['CO'] = {'type':'county','shape_dir':'counties_co','file':'counties_CO.shp'}
-shapeDict['KS'] = {'type':'county','shape_dir':'counties_ks','file':'counties_KS.shp'}
-shapeDict['MO'] = {'type':'county','shape_dir':'counties_mo','file':'counties_MO.shp'}
-shapeDict['OH'] = {'type':'county','shape_dir':'counties_oh','file':'counties_OH.shp'}
-shapeDict['IL'] = {'type':'county','shape_dir':'counties_il','file':'counties_IL.shp'}
-shapeDict['IN'] = {'type':'county','shape_dir':'counties_in','file':'counties_IN.shp'}
-shapeDict['WI'] = {'type':'county','shape_dir':'counties_wi','file':'counties_WI.shp'}
-shapeDict['SD'] = {'type':'county','shape_dir':'counties_sd','file':'counties_SD.shp'}
-shapeDict['WY'] = {'type':'county','shape_dir':'counties_wy','file':'counties_WY.shp'}
-shapeDict['Lake_MI_counties'] = {'type':'county','shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
-shapeDict['20190314_survey'] = {'type':'survey','shape_dir':'survey_20190314','file':'survey.shp'}
-shapeDict['20190528_survey'] = {'type':'survey','shape_dir':'survey_20190528','file':'20190528_survey.shp'}
-shapeDict['20190720_paths'] = {'type':'survey','shape_dir':'survey_20190720','file':'extractDamagePaths.shp'}
-shapeDict['20190720_points'] = {'type':'survey','shape_dir':'survey_20190720','file':'wind_damage_points.shp'}
-shapeDict['20190704_survey'] = {'type':'survey','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
-shapeDict['20190911_survey'] = {'type':'survey','shape_dir':'survey_20190911','file':'manual_swath.shp'}
+shapeDict['ND'] = {'type':county_dir,'shape_dir':'counties_nd','file':'counties_ND.shp'}
+shapeDict['MN'] = {'type':county_dir,'shape_dir':'counties_mn','file':'counties_MN.shp'}
+shapeDict['MI'] = {'type':county_dir,'shape_dir':'counties_mi','file':'counties_MI.shp'}
+shapeDict['CO'] = {'type':county_dir,'shape_dir':'counties_co','file':'counties_CO.shp'}
+shapeDict['KS'] = {'type':county_dir,'shape_dir':'counties_ks','file':'counties_KS.shp'}
+shapeDict['MO'] = {'type':county_dir,'shape_dir':'counties_mo','file':'counties_MO.shp'}
+shapeDict['OH'] = {'type':county_dir,'shape_dir':'counties_oh','file':'counties_OH.shp'}
+shapeDict['IL'] = {'type':county_dir,'shape_dir':'counties_il','file':'counties_IL.shp'}
+shapeDict['IN'] = {'type':county_dir,'shape_dir':'counties_in','file':'counties_IN.shp'}
+shapeDict['IA'] = {'type':county_dir,'shape_dir':'counties_ia','file':'counties_IA.shp'}
+shapeDict['WI'] = {'type':county_dir,'shape_dir':'counties_wi','file':'counties_WI.shp'}
+shapeDict['SD'] = {'type':county_dir,'shape_dir':'counties_sd','file':'counties_SD.shp'}
+shapeDict['WY'] = {'type':county_dir,'shape_dir':'counties_wy','file':'counties_WY.shp'}
+shapeDict['WY'] = {'type':county_dir,'shape_dir':'counties_wy','file':'counties_WY.shp'}
+shapeDict['NORTH_PLAINS_STATES'] = {'type':'states','shape_dir':'state_north_plains','file':'states_NORTH_PLAINS.shp'}
+shapeDict['20180719_survey'] = {'type':'surveys','shape_dir':'survey_20180719','file':'extractDamagePolys.shp'}
+
+shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
+
+shapeDict['20190314_survey'] = {'type':'surveys','shape_dir':'survey_20190314','file':'survey.shp'}
+shapeDict['20190528_survey'] = {'type':'surveys','shape_dir':'survey_20190528','file':'20190528_survey.shp'}
+shapeDict['20190720_paths'] = {'type':'surveys','shape_dir':'survey_20190720','file':'extractDamagePaths.shp'}
+shapeDict['20190720_points'] = {'type':'surveys','shape_dir':'survey_20190720','file':'wind_damage_points.shp'}
+shapeDict['20190704_survey'] = {'type':'surveys','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
+shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','file':'manual_swath.shp'}
+
 shapelist = this_case['shapelist']
 #shapelist = ['KS','CO','MO']
 
@@ -60,13 +67,7 @@ def make_shapes():
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
-        shape_type = shape['type']
-        if shape_type == 'county':
-            shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
-        elif shape_type == 'survey':
-            shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
-        else:
-            pass
+        shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
         print(shape_path)
         SHAPE = get_shapefile(shape_path)
         shape_mini[t] = SHAPE
@@ -75,7 +76,7 @@ def make_shapes():
 def make_shapes_mi():
     shape_michigan = {}
     shape = shapeDict['MI']
-    shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
+    shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
     print(shape_path)
     SHAPE = get_shapefile(shape_path)
     shape_michigan['MI'] = SHAPE
@@ -87,13 +88,8 @@ def make_states():
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
-        shape_type = shape['type']
-        if shape_type == 'county':
-            shape_path = os.path.join(base_gis_dir,'counties',shape['shape_dir'],shape['file'])
-        elif shape_type == 'survey':
-            shape_path = os.path.join(base_gis_dir,'surveys',shape['shape_dir'],shape['file'])
-        else:
-            pass
+
+        shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
         print(shape_path)
         SHAPE = get_shapefile(shape_path)
         shape_mini[t] = SHAPE

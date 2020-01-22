@@ -9,38 +9,71 @@ gets selected with:
 That dictionary then gets imported into:
 
     wdss_create_netcdfs.py          :    make netcdfs for that case
-    wdss_stage_files.py             :    copy/rename netcdfs to a staging directory
-    wdss_create_figures.py          :    create images using staged netcdfs              
+    wdss_create_figures.py          :    create images using staged netcdf
+    satellite-create-figures        :    create satellite images, possibly with radar and lightning          
     
 
 A dictionary contains the following case information:
 
-Required:    
-         cases : key      : arbitrary name for case
-          date : string   : for file/directory naming conventions   
-           rda : string   : also for file/directory naming conventions
-        latmax : float    : north map plot extent
-        latmin : float    : south map plot extent
-        lonmin : float    : west map plot extent
-        lonmax : float    : east map plot extent
-       cutlist : list     : used by wdss_stage_files.py to know which cuts to copy
-  
-Optional:    
-      eventloc : float tuple  : event lat/lon pair to plot as marker 
-     eventloc2 : float tuple  : (event lat/lon pair to plot as marker 
-  start_latlon : float tuple  : initial lat/lon coordinates of feature
-    end_latlon : float tuple  : final lat/lon coordinates of feature
-    start_time : string       : product time stamp associated with start_latlon
-                              ::  example... '2017-07-20 00:07:34'
-      end_time : string       : product time stamp associated with end_latlon
-  storm_motion : float tuple  : storm direction in degrees, speed in knots
+   
+    Required
+---------------------------------------  
+              case : key          : name for case, usually based on date and radar used
+              date : string       : for file/directory naming conventions 
+         shapelist : string list  : list of shapefiles taken from gis_layers.py to be plotted
 
-feature_follow : boolean      : whether figures should be rendered feature follow
+
+    Required for radar
+---------------------------------------  
+               rda : string       : also for file/directory naming conventions
+            latmax : float        : north map plot extent
+            latmin : float        : south map plot extent
+            lonmin : float        : west map plot extent
+            lonmax : float        : east map plot extent
+           cutlist : string list  : tells wdss_create_figures.py which cuts to plot
+
+
+    Required for satellite
+---------------------------------------  
+          'pandas' : tuple        : data used to create a pandas date_range that will
+                                  : be used to arrange data into time bins.
+                                  : example ... ('2019-06-01 22:15', 24, '5min')
+      'sat_extent' : float list   : min/max lon/lon plot extent for satellite (usually larger than radar plots)
+                                  : example ... [-87.4, -81.2, 39.5, 45.5]
+                                  
+
+
+    If doing feature following zoom
+---------------------------------------    
+      start_latlon : float tuple  : initial lat/lon coordinates of feature
+        end_latlon : float tuple  : final lat/lon coordinates of feature
+        start_time : string       : product time stamp associated with start_latlon
+                                  : example... '2017-07-20 00:07:34'
+          end_time : string       : product time stamp associated with end_latlon    
+    feature_follow : boolean      : whether figures should be rendered feature follow
+
+
+    If plotting radar storm relative velocity (SRV)
+---------------------------------------  
+      storm_motion : float tuple  : storm direction in degrees, speed in knots
+  
+    If plotting markers
+---------------------------------------  
+          eventloc : float tuple  : event lat/lon pair to plot as marker 
+         eventloc2 : float tuple  : (event lat/lon pair to plot as marker 
+
+
+    Optional
+---------------------------------------
+     start_figures : datetime string : plot figures no earlier than YYYYmmddHHMMSS
+       end_figures : datetime string : plot figures no later than YYYYmmddHHMMSS
+                                       example... '20190314221500'
+
      
 author: thomas.turnage@noaa.gov
 Last updated:
-    10 June 2019 - removed lat/lon ticks since make_ticks function in create_figures.py does this now
-    11 June 2019 - added 'storm_motion' as input for srv function in create_figures.py
+    22 Jan 2020 -  added documentation regarding satellite plotting
+
 ------------------------------------------------
 """
 
@@ -48,6 +81,35 @@ Last updated:
 #                'SRV','SpectrumWidth']
 
 cases = {}
+
+cases['20180719_comet'] = {'date':'20180719',
+     'shapelist':['NORTH_PLAINS_STATES','IA','20180719_survey'],
+     # ------ No radar
+     'rda':'KDMX',
+     'lonmin':-98.5,
+     'lonmax':-91.0,
+     'latmax':44.5,
+     'latmin':39.5,
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40','03.10'],
+
+     # ------ No storm relative
+     #'storm_motion': (278,46),     
+
+     # ------ No feature following zoom
+     #'start_latlon': (42.979,-85.722),
+     #'end_latlon': (42.917,-85.30),
+     #'start_time': '2019-09-11 23:40:23',
+     #'end_time': '2019-09-12 00:36:54',
+     #'feature_follow': True,
+
+     'pandas' : ('2018-07-19 16:00', 10, '5min'),
+     'sat_extent' : [-98.5,-91.0,39.5,44.5],
+
+     # ------ No start/end figures
+     #'start_figures': 20190911231000,     
+     #'end_figures': 20190912005000
+     }
+
 
 cases['20080608_KGRR'] = {'date':'20080608',
      'rda':'KGRR',
@@ -311,7 +373,7 @@ cases['20190720_record_rain'] = {'date':'20190720',
      'latmin':44.25,
      'sat_extent' : [-89.5,-84.0,42.0,45.5],
      #'pandas' : ('2019-07-04 20:15', 24, '5min'),
-     'pandas' : ('2019-07-20 18:00', 13, '5min'),
+     'pandas' : ('2019-07-20 02:00', 60, '15min'),
      'start_latlon': (45.685,-90.444),
      'end_latlon': (45.310,-89.325),
      'start_time': '2019-07-20 00:05:18',
@@ -358,8 +420,10 @@ cases['20191020_KFWS'] = {'date':'20190720',
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
      }	
 
-#this_case = cases['eek']
-#this_case = cases['20190720_KGRBB']
-this_case = cases['20190720_record_rain']
+
+
+
+
+this_case = cases['20180719_comet']
 this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']
