@@ -1,27 +1,54 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jun 22 08:16:00 2019
-
-@author: tjtur
+Last updated: 02Feb2020
+              added documentation
+              no longer builds shape_mini dictionary internally, but rather lets
+              other scripts make that call
 """
 
 import os
-from case_data import this_case
+import sys
+
+
+try:
+    os.listdir('/usr')
+    windows = False
+    sys.path.append('/data/scripts/resources')
+except:
+    sys.path.append('C:/data/scripts/resources')
+
+from reference_data import set_paths
+
+data_dir,image_dir,archive_dir,gis_dir,py_call,placefile_dir = set_paths()
+
+
+# please see documentation in resources/case_data.py for additional information
+
+
+
+# from the case_data documentation:
+# shapelist : string list  : list of shapefiles taken from gis_layers.py to be plotted
+#try: 
+#    from case_data import this_case
+#    shapelist = this_case['shapelist']
+#except:
+#    print('No list of shapefiles available!')
+
+# will be altering workflow to have other scripts call the make_shapes method
+# with a user-defined list of desired shapefiles
+
+
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 #from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 import cartopy.io.shapereader as shpreader
 
-
-try:
-    os.listdir('/usr')
-    base_gis_dir = '/data/GIS'
-except:
-    base_gis_dir = 'C:/data/GIS'
-
-
 county_dir = 'counties'
+
+# shapeDict categorizes each shapefile by type which also helps define the
+# path to each shapefile
+# It's admittedly confusing, but a ST (state) key refers to the counties for that state
 
 shapeDict = {}
 #shapeDict['ND'] = {'shape_dir':'counties_nd','file':'counties_ND.shp','shape_name':'COUNTIES_ND'}
@@ -53,7 +80,7 @@ shapeDict['20190720_points'] = {'type':'surveys','shape_dir':'survey_20190720','
 shapeDict['20190704_survey'] = {'type':'surveys','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
 shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','file':'manual_swath.shp'}
 
-shapelist = this_case['shapelist']
+
 #shapelist = ['KS','CO','MO']
 
 def get_shapefile(shape_path):
@@ -63,41 +90,80 @@ def get_shapefile(shape_path):
     return SHAPEFILE
 
 
-def make_shapes():
+def make_shapes(shapelist):
+    """
+    This most flexible cartopy shapely creation method because it takes
+    a user-defined list of desired shapefiles
+    
+    Parameters
+    ----------
+      shapelist :    list of strings
+                     values of shapeDict keys associated with the shapefiles to be plotted
+                   
+    Dependencies
+    ----------
+   get_shapefile :   method
+                     reads shapefile and creates Shape Feature
+
+
+    Returns
+    -------
+       shape_mini :  dictionary of one or more items
+
+                      key  --  string referring to shapefile
+                    value  --  created cartopy Shapely Feature object
+                            allows iterative cartopy plots using 
+                            the cartopy add_feature method
+
+    """             
+
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
-        shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
+        shape_path = os.path.join(gis_dir,shape['type'],shape['shape_dir'],shape['file'])
         print(shape_path)
         SHAPE = get_shapefile(shape_path)
         shape_mini[t] = SHAPE
     return shape_mini
 
-def make_shapes_mi():
-    shape_michigan = {}
-    shape = shapeDict['MI']
-    shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
-    print(shape_path)
-    SHAPE = get_shapefile(shape_path)
-    shape_michigan['MI'] = SHAPE
-    return shape_michigan
 
 
-def make_states():
-    shapelist = ['MI','WI','IN','IL']
+
+def make_MI_and_surrounding_state_counties():
+    """
+    It's common for me to want counties for Michigan and surrounding states
+    So this is a hard-wired method for this using a pre-defined shapelist
+
+
+    Returns
+    -------
+    shape_mini : a dictionary of cartopy Shapely Features ready to iteratively
+                 called and plotted with the cartopy add_feature method
+                 The "mini" refers to the fact this is likely a subset of options
+                 in the shapeDict dictionary. The key difference being that
+                 cartopy objects are actually created here 
+                
+
+
+    """
+    shapelist = ['MI','WI','IN','IL', 'OH']
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
 
-        shape_path = os.path.join(base_gis_dir,shape['type'],shape['shape_dir'],shape['file'])
+        shape_path = os.path.join(gis_dir,shape['type'],shape['shape_dir'],shape['file'])
         print(shape_path)
         SHAPE = get_shapefile(shape_path)
         shape_mini[t] = SHAPE
     return shape_mini
 
-shape_states = make_states()
-shape_michigan = make_shapes_mi()
-shape_mini = make_shapes()
+
+#shape_states = make_MI_and_surrounding_state_counties()
+# shape_michigan = make_shapes_mi()  # not really using this since it's rare
+# that I would only want to display MI counties and it's not much more overhead
+# to plot surrounding state countes
+
+#shape_mini = make_shapes(shapelist)
 
 states = cfeature.NaturalEarthFeature(
         category='cultural',
