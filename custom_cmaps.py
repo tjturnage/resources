@@ -3,7 +3,9 @@
 Creates custom cmaps for matplotlib
 https://matplotlib.org/3.1.0/tutorials/colors/colormap-manipulation.html
 
-Assumption: You'll import the created cmaps into wdss_create_netcdfs.py
+Assumption: You'll import the created cmaps into other scripts that create plots
+
+This is composed of a couple dictionaries
 
 author: thomas.turnage@noaa.gov
 Last updated: 15 Jun 2019
@@ -67,12 +69,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.colors import ListedColormap
 import sys
-#from metpy.plots import colortables
+
 
 plts = {}
 cmaps = {}
 
 #-------- Begin creating custom color maps --------
+
+# colors - a list of 3 element tuples. Each tuple is between 0 and 255, corresponding to RGB
+# position - a list of positions that color changes occur, ranging from 0 to 1
+# cmaps - dictionary containing colors, position, and min/max values
 
 #--- Reflectivity
 
@@ -85,9 +91,13 @@ position=[0.0,0.001,0.1187,0.125,0.2437,0.25,0.3093,0.3125,0.3520,0.3541,0.4531,
 cmaps['wdtd_v'] = {'colors':colors,'position':position, 'min':-120,'max':120}
 cmaps['rankine'] = {'colors':colors,'position':position, 'min':-3,'max':3}
 
-colors = [(0,0,0),(50,65,120),(55,70,130),(75,90,155),(100,120,180),(125,140,200),(175,200,250),(50,115,70),(75,135,90),(105,160,110),(130,180,135),(165,205,160),(225,225,225),(215,190,180),(190,150,130),(160,120,95),(135,85,55),(105,45,10),(240,160,140),(220,120,105),(195,80,70),(165,60,62),(135,55,55),(105,35,45)]
-position=[0.0,0.00001,0.05,0.1,0.15,0.2,0.25,0.255,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.745,0.75,0.8,0.85,0.9,0.95,1.0]
-cmaps['dkc_v'] = {'colors':colors,'position':position, 'min':-100,'max':100}
+colors_dkc_v = [(0,0,0),(50,65,120),(55,70,130),(75,90,155),(100,120,180),(125,140,200),(175,200,250),(50,115,70),(75,135,90),(105,160,110),(130,180,135),(165,205,160),(225,225,225),(215,190,180),(190,150,130),(160,120,95),(135,85,55),(105,45,10),(240,160,140),(220,120,105),(195,80,70),(165,60,62),(135,55,55),(105,35,45)]
+position_dkc_v = [0.0,0.00001,0.05,0.1,0.15,0.2,0.25,0.255,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.745,0.75,0.8,0.85,0.9,0.95,1.0]
+dkc_v_cmap=make_cmap(colors_dkc_v, position=position_dkc_v)
+plt.register_cmap(cmap=dkc_v_cmap)
+cmaps['dkc_v'] = {'colors':colors_dkc_v,'position':position_dkc_v, 'min':-10,'max':10}
+plts['dkc_v'] = {'cmap':dkc_v_cmap,'vmn':-10,'vmx':10.0,'title':'DKC Vel'}
+
 
 #colors=[(0,0,0),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
 colors=[(255,255,255),(130,130,130),(95,189,207),(57,201,105),(57,201,105),(0,40,0),(9,94,9),(255,207,0),(255,207,0),(255,133,0),(255,0,0),(89,0,0),(255,245,255),(225,11,227),(164,0,247),(99,0,214),(5,221,224),(58,103,181),(255,255,255)]
@@ -100,6 +110,7 @@ position=[0.0, 45/110, 75/110, 90/110, 1]
 cmaps['wdtd_bw'] = {'colors':colors,'position':position, 'min':-30,'max':80}
 
 z = cmaps['wdtd_bw']
+z = cmaps['wdtd_z']
 v = cmaps['wdtd_v']
 
 vel_max = 100
@@ -171,8 +182,10 @@ azdv_cmap=make_cmap(azdv_colors, position=azdv_position)
 plt.register_cmap(cmap=azdv_cmap)
 
 #--- Rankine AzShear
-azrank_colors = [(0,1,0),(0.8,1,0.8),(1,1,1),(1,1,1),(1,1,1),(1,0.8,0.8),(1,0,0)]
-azrank_position = [0,0.2,0.35,0.5,0.65,0.8,1]
+#azrank_colors = [(0,1,0),(0.8,1,0.8),(1,1,1),(1,1,1),(1,1,1),(1,0.8,0.8),(1,0,0)]
+#azrank_position = [0,0.2,0.35,0.5,0.65,0.8,1]
+azrank_colors = [(0,1,0),(1,1,1),(1,0,0)]
+azrank_position = [0,0.5,1]
 azrank_cmap=make_cmap(azrank_colors, position=azrank_position)
 plt.register_cmap(cmap=azrank_cmap)
 plts['AzRank'] = {'cmap':azrank_cmap,'vmn':-2,'vmx':2,'title':'AzRank','cbticks':[0],'cblabel':'s $\mathregular{^-}{^1}$'}
@@ -223,6 +236,26 @@ ltg_position = [0,0.6,1]
 ltg_cmap=make_cmap(ltg_colors, position=ltg_position)
 plt.register_cmap(cmap=ltg_cmap)
 
+#--- brown_ramp
+brown_colors = [(0,134/255,78/255),(1,1,1),(246/255,83/255,166/255)]
+#brown_colors = [(0,78/255,134/255),(1,1,1),(115/255,94/255,0)]
+brown_position = [0,1/2,1]
+brown_cmap=make_cmap(brown_colors, position=brown_position)
+plt.register_cmap(cmap=brown_cmap)
+plts['brown_ramp'] = {'cmap':brown_cmap,'vmn':0,'vmx':10.0,'title':'Brown_Ramp'}
+
+brown_gray_colors = [(0,134/255,78/255),(0.8,0.8,0.8),(246/255,83/255,166/255)]
+brown_gray_cmap=make_cmap(brown_gray_colors, position=brown_position)
+plt.register_cmap(cmap=brown_gray_cmap)
+plts['brown_gray_ramp'] = {'cmap':brown_gray_cmap,'vmn':0,'vmx':10.0,'title':'Brown_Gray_Ramp'}
+
+jg = 0.4
+jgt = (jg,jg,jg)
+just_gray_colors = [jgt,jgt]
+just_gray_position = [0,1]
+just_gray_cmap=make_cmap(just_gray_colors, position=just_gray_position)
+plt.register_cmap(cmap=just_gray_cmap)
+plts['just_gray'] = {'cmap':just_gray_cmap,'vmn':-10.0,'vmx':10.0,'title':'Just Gray'}
 #-------- End creating custom color maps --------
 
 

@@ -37,26 +37,26 @@ def set_paths():
     
     try:
         os.listdir('/usr')
-        windows = False
 
         data_dir = '/data'
         scripts_dir = os.path.join(data_dir,'scripts')
         sys.path.append(os.path.join(scripts_dir,'resources'))
         image_dir = os.path.join('/var/www/html','images')
+        placefile_dir = os.path.join('/var/www/html','placefiles')
         archive_dir = os.path.join(image_dir,'archive')
         gis_dir = os.path.join(data_dir,'GIS')
         py_call = '/usr1/anaconda3/bin/python '
 
     except:
-        windows = True
-
         data_dir = 'C:/data'    
         scripts_dir = os.path.join(data_dir,'scripts')
         sys.path.append(os.path.join(scripts_dir,'resources'))
         image_dir = os.path.join(data_dir,'images')
+        placefile_dir = os.path.join(data_dir,'placefiles')
         archive_dir = os.path.join(data_dir,'archive')
         gis_dir = os.path.join(data_dir,'GIS')
-        py_call = '/usr1/anaconda3/bin/python '
+        py_call = None
+
     
-    return data_dir,image_dir,archive_dir,gis_dir,py_call
+    return data_dir,image_dir,archive_dir,gis_dir,py_call,placefile_dir
 

@@ -4,7 +4,7 @@ A collection of dictionaries. Each dictionary contains metadata for a case.
 Creating a dictionary for a case is the first in the whole work flow. A dictionary
 gets selected with:
 
-    this_case = cases['[letter]']    
+    this_case = cases[{string}]    
 
 That dictionary then gets imported into:
 
@@ -13,7 +13,7 @@ That dictionary then gets imported into:
     satellite-create-figures        :    create satellite images, possibly with radar and lightning          
     
 
-A dictionary contains the following case information:
+A case dictionary entry contains the following information:
 
    
     Required
@@ -425,5 +425,6 @@ cases['20191020_KFWS'] = {'date':'20190720',
 
 
 this_case = cases['20180719_comet']
-this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
+this_case = cases['20190720_record_rain']
+#this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']
