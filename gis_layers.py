@@ -45,6 +45,9 @@ from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
 import cartopy.io.shapereader as shpreader
 
 county_dir = 'counties'
+state_dir = 'states'
+interstate_dir = 'interstates'
+places_dir = 'places'
 
 # shapeDict categorizes each shapefile by type which also helps define the
 # path to each shapefile
@@ -68,7 +71,11 @@ shapeDict['WI'] = {'type':county_dir,'shape_dir':'counties_wi','file':'counties_
 shapeDict['SD'] = {'type':county_dir,'shape_dir':'counties_sd','file':'counties_SD.shp'}
 shapeDict['WY'] = {'type':county_dir,'shape_dir':'counties_wy','file':'counties_WY.shp'}
 shapeDict['WY'] = {'type':county_dir,'shape_dir':'counties_wy','file':'counties_WY.shp'}
+shapeDict['states_CONUS'] = {'type':state_dir,'shape_dir':'states_CONUS','file':'states_CONUS.shp'}
+shapeDict['interstates_conus'] = {'type':interstate_dir,'shape_dir':'interstates_conus','file':'interstates_conus.shp'}
 shapeDict['NORTH_PLAINS_STATES'] = {'type':'states','shape_dir':'state_north_plains','file':'states_NORTH_PLAINS.shp'}
+shapeDict['places_usa'] = {'type':places_dir,'shape_dir':'places_usa','file':'places_usa.shp'}
+
 shapeDict['20180719_survey'] = {'type':'surveys','shape_dir':'survey_20180719','file':'extractDamagePolys.shp'}
 
 shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
@@ -147,6 +154,34 @@ def make_MI_and_surrounding_state_counties():
 
     """
     shapelist = ['MI','WI','IN','IL', 'OH']
+    shape_mini = {}
+    for t in shapelist:
+        shape = shapeDict[t]
+
+        shape_path = os.path.join(gis_dir,shape['type'],shape['shape_dir'],shape['file'])
+        print(shape_path)
+        SHAPE = get_shapefile(shape_path)
+        shape_mini[t] = SHAPE
+    return shape_mini
+
+def pyart_gis_layers():
+    """
+    It's common for me to want counties for Michigan and surrounding states
+    So this is a hard-wired method for this using a pre-defined shapelist
+
+
+    Returns
+    -------
+    shape_mini : a dictionary of cartopy Shapely Features ready to iteratively
+                 called and plotted with the cartopy add_feature method
+                 The "mini" refers to the fact this is likely a subset of options
+                 in the shapeDict dictionary. The key difference being that
+                 cartopy objects are actually created here 
+                
+
+
+    """
+    shapelist = ['interstates_conus','states_CONUS','places_usa']
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
