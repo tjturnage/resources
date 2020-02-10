@@ -116,6 +116,15 @@ plts['Velocity'] = {'cmap':vel_cmap,'vmn':v['min'],'vmx':v['max'],'title':'Veloc
 plts['Vel'] = plts['Velocity']
 plts['SRV'] = plts['Velocity']
 
+jg = 0.2
+jgt = (jg,jg,jg)
+just_gray_colors = [jgt,jgt]
+just_gray_position = [0,1]
+just_gray_cmap=make_cmap(just_gray_colors, position=just_gray_position)
+plt.register_cmap(cmap=just_gray_cmap)
+plts['just_gray'] = {'cmap':just_gray_cmap,'vmn':-10.0,'vmx':10.0,'title':'Just Gray'}
+
+
 #--- Rankine
 rank_colors=[(0,0,0),(12,250,250),(221,181,243),(238,186,248),(5,8,255),(14,22,255),(158,238,220),(119,244,154),(146,240,199),(3,239,0),(0,48,0),(87,124,85),(109,131,107),(138,110,124),(132,62,71),(93,2,3),(253,30,46),(253,155,156),(252,202,137),(255,255,0),(238,143,56),(238,143,56),(248,246,245),(248,246,245),(63,18,13),(63,18,13)]
 rank_position=[0.0,0.001,0.1187,0.125,0.2437,0.25,0.3093,0.3125,0.3520,0.3541,0.4531,0.4583,0.4979,0.5,0.5395,0.5416,0.6406,0.6458,0.6854,0.6875,0.7468,0.75,0.8687,0.875,0.9937,1.0]
@@ -139,6 +148,19 @@ gtb_light_cmap=make_cmap(gtb_light_colors, position=gtb_light_position,bit=True)
 cmaps['gtb_light'] = {'colors':gtb_light_colors,'position':gtb_light_position, 'min':-3,'max':3}
 plt.register_cmap(cmap=gtb_light_cmap)
 plts['GTB_light'] = {'cmap':gtb_light_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
+
+#--- brown_ramp	
+brown_colors = [(0,134/255,78/255),(1,1,1),(246/255,83/255,166/255)]	
+#brown_colors = [(0,78/255,134/255),(1,1,1),(115/255,94/255,0)]	
+brown_position = [0,1/2,1]	
+brown_cmap=make_cmap(brown_colors, position=brown_position)	
+plt.register_cmap(cmap=brown_cmap)	
+plts['brown_ramp'] = {'cmap':brown_cmap,'vmn':0,'vmx':10.0,'title':'Brown_Ramp'}	
+
+brown_gray_colors = [(0,134/255,78/255),(0.8,0.8,0.8),(246/255,83/255,166/255)]	
+brown_gray_cmap=make_cmap(brown_gray_colors, position=brown_position)	
+plt.register_cmap(cmap=brown_gray_cmap)	
+plts['brown_gray_ramp'] = {'cmap':brown_gray_cmap,'vmn':0,'vmx':10.0,'title':'Brown_Gray_Ramp'}
 
 #--- Spectrum Width
 sw_colors = [(0,0,0),(220,220,255),(180,180,240),(50,50,150),(255,255,0),(255,150,0),(255,0,0),(255,255,255)]

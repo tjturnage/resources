@@ -25,19 +25,6 @@ data_dir,image_dir,archive_dir,gis_dir,py_call,placefile_dir = set_paths()
 # please see documentation in resources/case_data.py for additional information
 
 
-
-# from the case_data documentation:
-# shapelist : string list  : list of shapefiles taken from gis_layers.py to be plotted
-#try: 
-#    from case_data import this_case
-#    shapelist = this_case['shapelist']
-#except:
-#    print('No list of shapefiles available!')
-
-# will be altering workflow to have other scripts call the make_shapes method
-# with a user-defined list of desired shapefiles
-
-
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
@@ -51,12 +38,11 @@ places_dir = 'places'
 
 # shapeDict categorizes each shapefile by type which also helps define the
 # path to each shapefile
-# It's admittedly confusing, but a ST (state) key refers to the counties for that state
+
 
 shapeDict = {}
-#shapeDict['ND'] = {'shape_dir':'counties_nd','file':'counties_ND.shp','shape_name':'COUNTIES_ND'}
-#shapeDict['MN'] = {'shape_dir':'counties_mn','file':'counties_MN.shp','shape_name':'COUNTIES_MN'}
-#shapeDict['MI'] = {'shape_dir':'counties_mi','file':'counties_MI.shp','shape_name':'COUNTIES_MI'}
+
+# It's admittedly confusing, but a ST (state) key here refers to the counties for that state 
 shapeDict['ND'] = {'type':county_dir,'shape_dir':'counties_nd','file':'counties_ND.shp'}
 shapeDict['MN'] = {'type':county_dir,'shape_dir':'counties_mn','file':'counties_MN.shp'}
 shapeDict['MI'] = {'type':county_dir,'shape_dir':'counties_mi','file':'counties_MI.shp'}
@@ -77,9 +63,6 @@ shapeDict['NORTH_PLAINS_STATES'] = {'type':'states','shape_dir':'state_north_pla
 shapeDict['places_usa'] = {'type':places_dir,'shape_dir':'places_usa','file':'places_usa.shp'}
 
 shapeDict['20180719_survey'] = {'type':'surveys','shape_dir':'survey_20180719','file':'extractDamagePolys.shp'}
-
-shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
-
 shapeDict['20190314_survey'] = {'type':'surveys','shape_dir':'survey_20190314','file':'survey.shp'}
 shapeDict['20190528_survey'] = {'type':'surveys','shape_dir':'survey_20190528','file':'20190528_survey.shp'}
 shapeDict['20190720_paths'] = {'type':'surveys','shape_dir':'survey_20190720','file':'extractDamagePaths.shp'}
@@ -87,6 +70,7 @@ shapeDict['20190720_points'] = {'type':'surveys','shape_dir':'survey_20190720','
 shapeDict['20190704_survey'] = {'type':'surveys','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
 shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','file':'manual_swath.shp'}
 
+shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
 
 #shapelist = ['KS','CO','MO']
 
@@ -166,22 +150,29 @@ def make_MI_and_surrounding_state_counties():
 
 def pyart_gis_layers():
     """
-    It's common for me to want counties for Michigan and surrounding states
-    So this is a hard-wired method for this using a pre-defined shapelist
+    This will be the standard list of layers to plot for pyart displays
+    Typically, the pyart_plot.py script calls this with the following line:
+        
+        shape_mini = pyart_gis_layers()
 
+
+    Dependencies
+    ----------
+    get_shapefile :   method
+                     reads shapefile and creates Shape Feature
 
     Returns
     -------
     shape_mini : a dictionary of cartopy Shapely Features ready to iteratively
                  called and plotted with the cartopy add_feature method
-                 The "mini" refers to the fact this is likely a subset of options
-                 in the shapeDict dictionary. The key difference being that
-                 cartopy objects are actually created here 
+                 The "mini" naming convention refers to fact this is likely a 
+                 subset of options in the shapeDict dictionary.
+                 The key difference being that cartopy objects are actually created here 
                 
 
 
     """
-    shapelist = ['interstates_conus','states_CONUS','places_usa']
+    shapelist = ['interstates_conus','states_CONUS']
     shape_mini = {}
     for t in shapelist:
         shape = shapeDict[t]
@@ -190,15 +181,10 @@ def pyart_gis_layers():
         print(shape_path)
         SHAPE = get_shapefile(shape_path)
         shape_mini[t] = SHAPE
+        
     return shape_mini
 
 
-#shape_states = make_MI_and_surrounding_state_counties()
-# shape_michigan = make_shapes_mi()  # not really using this since it's rare
-# that I would only want to display MI counties and it's not much more overhead
-# to plot surrounding state countes
-
-#shape_mini = make_shapes(shapelist)
 
 states = cfeature.NaturalEarthFeature(
         category='cultural',
