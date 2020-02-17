@@ -68,6 +68,9 @@ import sys
 plts = {}
 cmaps = {}
 
+one_ramp = [0,1]
+two_ramp = [0,0.5,1]
+
 #-------- Begin creating custom color maps --------
 
 #--- Reflectivity
@@ -116,22 +119,6 @@ plts['Velocity'] = {'cmap':vel_cmap,'vmn':v['min'],'vmx':v['max'],'title':'Veloc
 plts['Vel'] = plts['Velocity']
 plts['SRV'] = plts['Velocity']
 
-jg = 0.2
-jgt = (jg,jg,jg)
-just_gray_colors = [jgt,jgt]
-just_gray_position = [0,1]
-just_gray_cmap=make_cmap(just_gray_colors, position=just_gray_position)
-plt.register_cmap(cmap=just_gray_cmap)
-plts['just_gray'] = {'cmap':just_gray_cmap,'vmn':-10.0,'vmx':10.0,'title':'Just Gray'}
-
-#jg = 0.2
-jy = (0.8,0.8,0)
-just_yellow_colors = [(1,1,1),jy]
-just_yellow_position = [0,1]
-just_yellow_cmap=make_cmap(just_yellow_colors, position=just_yellow_position)
-plt.register_cmap(cmap=just_yellow_cmap)
-plts['just_yellow'] = {'cmap':just_yellow_cmap,'vmn':-10.0,'vmx':10.0,'title':'Just Gray'}
-
 
 #--- Rankine
 rank_colors=[(0,0,0),(12,250,250),(221,181,243),(238,186,248),(5,8,255),(14,22,255),(158,238,220),(119,244,154),(146,240,199),(3,239,0),(0,48,0),(87,124,85),(109,131,107),(138,110,124),(132,62,71),(93,2,3),(253,30,46),(253,155,156),(252,202,137),(255,255,0),(238,143,56),(238,143,56),(248,246,245),(248,246,245),(63,18,13),(63,18,13)]
@@ -142,39 +129,60 @@ plt.register_cmap(cmap=rankine_cmap)
 plts['Rankine'] = {'cmap':rankine_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
 
 #--- Green to Brown
-gtb_colors=[(0,225,0),(215,215,215),(165,42,42)]
-gtb_position=[0.0,0.5,1.0]
-gtb_cmap=make_cmap(gtb_colors, position=gtb_position,bit=True)
-cmaps['gtb'] = {'colors':gtb_colors,'position':gtb_position, 'min':-3,'max':3}
-plt.register_cmap(cmap=gtb_cmap)
-plts['GTB'] = {'cmap':gtb_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
+green_gray_brown_colors=[(0,225,0),(215,215,215),(165,42,42)]
+green_gray_brown_cmap=make_cmap(green_gray_brown_colors, position=two_ramp,bit=True)
+plt.register_cmap(cmap=green_gray_brown_cmap)
+plts['green_gray_brown'] = {'cmap':green_gray_brown_cmap}
 
-#--- Green to Brown lighter
-gtb_light_colors=[(20,225,20),(255,255,255),(165,42,42)]
-gtb_light_position=[0.0,0.5,1.0]
-gtb_light_cmap=make_cmap(gtb_light_colors, position=gtb_light_position,bit=True)
-cmaps['gtb_light'] = {'colors':gtb_light_colors,'position':gtb_light_position, 'min':-3,'max':3}
-plt.register_cmap(cmap=gtb_light_cmap)
-plts['GTB_light'] = {'cmap':gtb_light_cmap,'vmn':-3,'vmx':3,'title':'Rankine','cbticks':[0],'cblabel':'kts'}
+#--- green_white_brown
+green_white_brown_colors = [(20,225,20),(255,255,255),(165,42,42)]
+green_white_brown_cmap=make_cmap(green_white_brown_colors, position=two_ramp,bit=True)
+plt.register_cmap(cmap=green_white_brown_cmap)
+plts['green_white_brown'] = {'cmap':green_white_brown_cmap}
 
-#--- brown_ramp	
-brown_colors = [(0,134/255,78/255),(1,1,1),(246/255,83/255,166/255)]	
-#brown_colors = [(0,78/255,134/255),(1,1,1),(115/255,94/255,0)]	
-brown_position = [0,1/2,1]	
-brown_cmap=make_cmap(brown_colors, position=brown_position)	
-plt.register_cmap(cmap=brown_cmap)	
-plts['brown'] = {'cmap':brown_cmap,'vmn':0,'vmx':10.0,'title':'Brown_Ramp'}	
+ 
+blue_white_brown = [(0,78/255,134/255),(1,1,1),(115/255,94/255,0)]	
+blue_white_brown_cmap=make_cmap(blue_white_brown, position=two_ramp)	
+plt.register_cmap(cmap=blue_white_brown_cmap)	
+plts['blue_white_brown'] = {'cmap':blue_white_brown_cmap}	
 
 
-green_white_pink_colors = [(51/255,158/255,113/255),(1,1,1),(247/255,117/255,184/255)]	
-green_white_pink_cmap=make_cmap(green_white_pink_colors, position=[0,1/2,1])	
-plt.register_cmap(cmap=green_white_pink_cmap)	
-plts['green_white_pink'] = {'cmap':green_white_pink_cmap,'vmn':0,'vmx':10.0,'title':'Green_Pink'}
+white_brown = [(1,1,1),(186/255,74/255,0)]	
+white_brown_cmap=make_cmap(white_brown, position=one_ramp)	
+plt.register_cmap(cmap=white_brown_cmap)	
+plts['white_brown'] = {'cmap':white_brown_cmap}	
 
-green_gray_pink_colors = [(51/255,158/255,113/255),(0.8,0.8,0.8),(247/255,117/255,184/255)]	
-green_gray_pink_cmap=make_cmap(green_gray_pink_colors, position=[0,1/2,1])	
-plt.register_cmap(cmap=green_gray_pink_cmap)	
-plts['green_gray_pink'] = {'cmap':green_gray_pink_cmap,'vmn':0,'vmx':10.0,'title':'Green_Gray_Pink'}
+green_white_pink1 = [(0,134/255,78/255),(1,1,1),(246/255,83/255,166/255)]	
+green_white_pink2 = [(51/255,158/255,113/255),(1,1,1),(247/255,117/255,184/255)]	
+green_gray_pink = [(51/255,158/255,113/255),(0.8,0.8,0.8),(247/255,117/255,184/255)]	
+green_white_pink_cmap1=make_cmap(green_white_pink1, position=two_ramp)	
+green_white_pink_cmap2=make_cmap(green_white_pink2, position=two_ramp)
+green_gray_pink_cmap=make_cmap(green_gray_pink, position=two_ramp)
+plt.register_cmap(cmap=green_white_pink_cmap1)	
+plt.register_cmap(cmap=green_white_pink_cmap2)	
+plt.register_cmap(cmap=green_gray_pink_cmap)
+plts['green_white_pink'] = {'cmap':green_white_pink_cmap1}
+plts['green_white_pink_lighter'] = {'cmap':green_white_pink_cmap2}
+plts['green_gray_pink'] = {'cmap':green_gray_pink_cmap}
+
+gr = 4/5
+gr_tup = (gr,gr,gr)
+red_black_blue = [(1,0,0),(0,0,0),(0,0,1)]
+blue_black_red = [(0,0,1),(0,0,0),(1,0,0)]
+red_gray_blue = [(1,0,0),gr_tup,(0,0,1)]
+blue_gray_red = [(0,0,1),gr_tup,(1,0,0)]
+red_black_blue_cmap=make_cmap(red_black_blue, position=two_ramp)	
+blue_black_red_cmap=make_cmap(blue_black_red, position=two_ramp)
+red_gray_blue_cmap=make_cmap(red_gray_blue, position=two_ramp)	
+blue_gray_red_cmap=make_cmap(blue_gray_red, position=two_ramp)
+plt.register_cmap(cmap=red_black_blue_cmap)
+plt.register_cmap(cmap=blue_black_red_cmap)
+plt.register_cmap(cmap=red_gray_blue_cmap)
+plt.register_cmap(cmap=blue_gray_red_cmap)
+plts['red_black_blue'] = {'cmap':red_black_blue_cmap}
+plts['blue_black_red'] = {'cmap':blue_black_red_cmap}
+plts['red_gray_blue'] = {'cmap':red_gray_blue_cmap}
+plts['blue_gray_red'] = {'cmap':blue_gray_red_cmap}
 
 #--- Spectrum Width
 sw_colors = [(0,0,0),(220,220,255),(180,180,240),(50,50,150),(255,255,0),(255,150,0),(255,0,0),(255,255,255)]
@@ -236,13 +244,13 @@ plts['AzShear_Storm'] = {'cmap':azdv_cmap,'vmn':-0.01,'vmx':0.01,'title':'AzShea
 
 #--- Azimuthal Shear / Div Shear Reversed -- 
 #--- this makes convergence (i.e., negative divergence) more intuitive to visualize
-azdv_simp_colors_r = [(1,0,0),(0.5,0.,0.5),(0,0,1)]
-azdv_simp_position_r = [0, 0.5, 1]
-azdv_simp_cmap_r=make_cmap(azdv_simp_colors_r, position=azdv_simp_position_r)
-plt.register_cmap(cmap=azdv_simp_cmap_r)
+conv_simp_colors_r = [(1,0,0),(0,0,0),(0,0,1)]
+conv_simp_position_r = [0, 0.5, 1]
+conv_simp_cmap_r=make_cmap(conv_simp_colors_r, position=conv_simp_position_r)
+plt.register_cmap(cmap=conv_simp_cmap_r)
 
-plts['DivShear_Simple'] = {'cmap':azdv_simp_cmap_r,'vmn':-0.01,'vmx':0.01,'title':'DivShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
-plts['DivShear_Storm_Simple'] = {'cmap':azdv_simp_cmap_r,'vmn':-0.01,'vmx':0.01,'title':'AzShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
+plts['Convergence_Simple'] = {'cmap':conv_simp_cmap_r,'vmn':-0.01,'vmx':0.01,'title':'DivShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
+plts['DivShear_Storm_Simple'] = {'cmap':conv_simp_cmap_r,'vmn':-0.01,'vmx':0.01,'title':'AzShear','cbticks':[-0.010,-0.005,0,0.005,0.010],'cblabel':'s $\mathregular{^-}{^1}$'}
 
 azdv_simp_colors = [(0,0,1),(0,0,0),(1,0,0)]
 azdv_simp_colors_gray = [(0,0,1),(0.5,0.5,0.8),(0.2,0.2,0.2),(1,0,0)]
