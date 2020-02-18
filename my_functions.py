@@ -74,6 +74,55 @@ def timeShift(timeStr,num,dt,direction='backward',api='mesowest'):
     return times
 
 
+def timeShift2(timeStr,num,dt):
+    """
+    Returns list of timestrings associated with a list of time intervals
+    
+    Parameters
+    ----------
+          timeStr : string
+                    'YYYYmmddHHMM' format
+              num : integer
+                    number of time steps
+               dt : integer
+                    number of minutes per step
+            
+    Returns
+    -------
+            times : list
+                    list of time intervals. These intervals contain 5 elements:
+                    - interval start time string as 'YYYYmmddHHMM'
+                    - interval start time string using mesowest format
+                    - interval   end time string using mesowest format
+                    - interval start time string using    mping format                    
+                    - interval   end time string using    mping format
+                                        
+    """
+    times = []
+    steps = int(num)
+    minStart = int(steps * dt)
+    initTime = datetime.strptime(timeStr,'%Y%m%d%H%M')
+    origTime = initTime - timedelta(minutes=minStart)
+
+
+    for x in range(0,steps):
+        mins = x * dt
+        new_start = origTime + timedelta(minutes=mins)
+        new_end = new_start + timedelta(minutes=dt)
+        new_start_str = datetime.strftime(new_start, '%Y%m%d%H%M')
+        
+        new_start_mw = datetime.strftime(new_start, '%Y-%m-%dT%H:%M:%SZ')
+        new_end_mw = datetime.strftime(new_end, '%Y-%m-%dT%H:%M:%SZ')
+        
+        new_start_mp = datetime.strftime(new_start, '%Y-%m-%dT%H:%M:%SZ')
+        new_end_mp = datetime.strftime(new_end, '%Y-%m-%dT%H:%M:%SZ')        
+
+          
+        times.append([new_start_str,new_start_mw,new_end_mw,new_start_mp,new_end_mp])
+
+
+    return times
+
 def latest_file(df, new_datetime,dtype):
     """
     Determines the filepath corresponding to the most recent time for a particular data type
@@ -142,13 +191,26 @@ def time_to_frostbite(wc):
                 
     return fbt
 
+# def define_mosaic_size(products):
+#     mosaic_size = {}
+#     mosaic_size[1] = {'h':6,'w':7,'rows':1,'columns':1}
+#     mosaic_size[2] = {'h':6,'w':15,'rows':1,'columns':2}
+#     mosaic_size[3] = {'h':6,'w':17,'rows':1,'columns':3}
+#     mosaic_size[4] = {'h':12,'w':14,'rows':2,'columns':2}
+#     mosaic_size[6] = {'h':12,'w':20,'rows':2,'columns':3}
+#     height = mosaic_size[len(products)]['h']
+#     width = mosaic_size[len(products)]['w']
+#     rows = mosaic_size[len(products)]['rows']
+#     cols = mosaic_size[len(products)]['columns']
+#     return width, height, rows, cols
+
 def define_mosaic_size(products):
     mosaic_size = {}
     mosaic_size[1] = {'h':6,'w':7,'rows':1,'columns':1}
     mosaic_size[2] = {'h':6,'w':15,'rows':1,'columns':2}
     mosaic_size[3] = {'h':6,'w':17,'rows':1,'columns':3}
     mosaic_size[4] = {'h':12,'w':14,'rows':2,'columns':2}
-    mosaic_size[6] = {'h':12,'w':20,'rows':2,'columns':3}
+    mosaic_size[6] = {'h':6,'w':10,'rows':2,'columns':3}
     height = mosaic_size[len(products)]['h']
     width = mosaic_size[len(products)]['w']
     rows = mosaic_size[len(products)]['rows']

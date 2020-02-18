@@ -425,6 +425,7 @@ cases['20191020_KFWS'] = {'date':'20190720',
 
 
 this_case = cases['20180719_comet']
-this_case = cases['20190720_record_rain']
+this_case = cases['20080608_KDTX']
+
 #this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']

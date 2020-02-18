@@ -72,7 +72,7 @@ shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','
 
 shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
 
-#shapelist = ['KS','CO','MO']
+shapelist = ['MI']
 
 def get_shapefile(shape_path):
     reader = shpreader.Reader(shape_path)
