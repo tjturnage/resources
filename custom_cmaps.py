@@ -119,7 +119,7 @@ vel_cmap=make_cmap(v['colors'], position=v['position'],bit=True)
 plt.register_cmap(cmap=vel_cmap)
 plts['Velocity'] = {'cmap':vel_cmap,'vmn':v['min'],'vmx':v['max'],'title':'Velocity','cbticks':vticks,'cblabel':'kts'}
 plts['Vel'] = plts['Velocity']
-plts['SRV'] = plts['Velocity']
+plts['SRV'] = {'cmap':vel_cmap,'vmn':v['min'],'vmx':v['max'],'title':'SR Velocity','cbticks':vticks,'cblabel':'kts'}
 
 
 #--- Rankine

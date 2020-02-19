@@ -69,6 +69,7 @@ shapeDict['20190720_paths'] = {'type':'surveys','shape_dir':'survey_20190720','f
 shapeDict['20190720_points'] = {'type':'surveys','shape_dir':'survey_20190720','file':'wind_damage_points.shp'}
 shapeDict['20190704_survey'] = {'type':'surveys','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
 shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','file':'manual_swath.shp'}
+shapeDict['20080608_survey'] = {'type':'surveys','shape_dir':'survey_20080608','file':'lansing.shp'}
 
 shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
 

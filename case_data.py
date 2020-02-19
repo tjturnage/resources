@@ -111,20 +111,40 @@ cases['20180719_comet'] = {'date':'20180719',
      }
 
 
+
+#cases['20080608_KGRR'] = {'date':'20080608',
+#      'rda':'KGRR',
+#      'lonmin':-87.45,
+#      'lonmax':-85.8,
+#      'latmin':43.05,
+#      'latmax':44.35,
+#      'start_latlon': (43.51,-86.05),
+#      'end_latlon': (43.05,-84.65),
+#      'start_time': '2008-06-08 17:47:51',
+#      'end_time': '2008-06-08 19:42:28',
+#      'storm_motion': (250,45),
+#      'feature_follow': True,
+#      'cutlist': ['00.50'],
+#      'shapelist':['MI']
+#      }
+
+
 cases['20080608_KGRR'] = {'date':'20080608',
      'rda':'KGRR',
-     'lonmin':-87.45,
-     'lonmax':-85.8,
-     'latmin':43.05,
-     'latmax':44.35,
-     'start_latlon': (43.51,-86.05),
-     'end_latlon': (43.05,-84.65),
-     'start_time': '2008-06-08 17:47:51',
-     'end_time': '2008-06-08 19:42:28',
+     'lonmin':-86.225,
+     'lonmax':-84.575,
+     'latmin':42.1,
+     'latmax':43.2,
+     'start_latlon': (42.73,-84.47),
+     'end_latlon': (42.74,-84.29),
+     'start_time': '2008-06-08 20:04:37',
+     'end_time': '2008-06-08 20:13:09',
+     'start_figures': 20080608191500,     
+     'end_figures': 20080608203000,
      'storm_motion': (250,45),
      'feature_follow': True,
      'cutlist': ['00.50'],
-     'shapelist':['MI']
+     'shapelist':['MI','20080608_survey']
      }
 
 cases['20080608_KDTX'] = {'date':'20080608',
@@ -141,7 +161,7 @@ cases['20080608_KDTX'] = {'date':'20080608',
      'storm_motion': (267,57),
      'feature_follow': True,
      'cutlist': ['00.50','00.90','01.30'],
-     'shapelist':['MI']
+     'shapelist':['MI','20080608_survey']
      }
 
 cases['20170919_KMVX'] = {'date':'20170919',
@@ -427,6 +447,7 @@ cases['20191020_KFWS'] = {'date':'20190720',
 
 this_case = cases['20180719_comet']
 this_case = cases['20080608_KDTX']
+this_case = cases['20080608_KGRR']
 
 #this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']
