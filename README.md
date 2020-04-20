@@ -1,5 +1,5 @@
 # resources
-assorted resources to be copied or imported
+methods, dictionaries, etc. to be shared among different repositories by being imported
 
 case_data.py
 ------------
