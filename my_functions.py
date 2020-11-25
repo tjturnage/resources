@@ -282,7 +282,10 @@ def dtList_nbm(run_dt,bulletin_type,tz_shift):
 
     #pTime = pd.Timestamp(fcst_hour_zero_utc)
     pTime = pd.Timestamp(fcst_hour_zero_local)
-    idx = pd.date_range(pTime, periods=27, freq='H')
+    if bulletin_type == 'nbhtx':
+        idx = pd.date_range(pTime, periods=27, freq='H')
+    else:
+        idx = pd.date_range(pTime, periods=23, freq='3H')        
     return idx, fcst_hour_zero_local
 
 
