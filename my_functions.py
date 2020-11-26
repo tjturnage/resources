@@ -159,50 +159,7 @@ def latest_file(df, new_datetime,dtype):
     data_path = new_data.file_path.max()
     return data_path
 
-def wind_chill(t,s):
-    """
-    Returns wind chill in degress F
-    Inputs:
-        t   : temperatures in degrees F
-        s   : wspd in MPH
-    """    
-    wc = 35.74 + 0.6215*t - 35.75*(s**0.16) + 0.4275*t*(s**0.16)
-    #print(round(wc))
-    if wc <= t:
-        return round(wc)
-    else:
-        return round(t)
 
-def time_to_frostbite(wc):
-    """
-    0 to -15        :   >30 minutes
-    -15 to -30      :   15 to 30 minutes
-    -30 to -50      :   <15 minutes
-    <  -50   :   < 5 minutes
-    """
-    if wc >= -15:
-        fbt = 4
-    if wc < -15:
-        fbt = 3
-    if wc < -30:
-        fbt = 2
-    if wc < -50:
-        fbt = 1
-                
-    return fbt
-
-# def define_mosaic_size(products):
-#     mosaic_size = {}
-#     mosaic_size[1] = {'h':6,'w':7,'rows':1,'columns':1}
-#     mosaic_size[2] = {'h':6,'w':15,'rows':1,'columns':2}
-#     mosaic_size[3] = {'h':6,'w':17,'rows':1,'columns':3}
-#     mosaic_size[4] = {'h':12,'w':14,'rows':2,'columns':2}
-#     mosaic_size[6] = {'h':12,'w':20,'rows':2,'columns':3}
-#     height = mosaic_size[len(products)]['h']
-#     width = mosaic_size[len(products)]['w']
-#     rows = mosaic_size[len(products)]['rows']
-#     cols = mosaic_size[len(products)]['columns']
-#     return width, height, rows, cols
 
 def define_mosaic_size(products):
     mosaic_size = {}
@@ -216,77 +173,6 @@ def define_mosaic_size(products):
     rows = mosaic_size[len(products)]['rows']
     cols = mosaic_size[len(products)]['columns']
     return width, height, rows, cols
-
-
-
-def categorize(data_list,element):
-    """
-    Categorizes different weather elements based on
-    dictionaries for each element. This is to make plots
-    of NBM text bulletins more clear.
-    
-    """
-
-    vis_dict = {'0.0':0,'0.3':1,'0.6':2,'1':3,'2':4,'4':3,'6':6}
-    zr_dict = {'-0.1':0,'1':1,'8':2,'18':3,'28':4,'45':5}
-    sn_dict = {'-0.1':0,'0.05':1,'0.15':2,'0.45':3,'0.75':4,'0.95':5,'1.35':6,'1.85':7}  
-    wc_dict = {'-20':6,'-10':5,'0':4,'10':3,'20':2,'30':1,}
-    #sn_dict = {'-0.1':0,'0.05':1,'0.15':2,'0.33':3,'0.75':4,'1.5':5,'2.5':6}    
-
-    if element == 'sn':
-        data_dict = sn_dict
-    if element == 'zr':
-        data_dict = zr_dict    
-    if element == 'vis':
-        data_dict = vis_dict    
-    if element == 'wc':
-        data_dict = wc_dict
-
-
-    category_list = []  
-    for x in range(0,len(data_list)):
-        val = data_list[x]
-        for key in data_dict:
-            if val > float(key):
-                x_cat = data_dict[key]
-            
-        category_list.append(x_cat)
-
-    return category_list
-
-def dtList_nbm(run_dt,bulletin_type,tz_shift):
-    """
-      Create pandas date range of forecast valid times based on bulletin
-      issuance time and bulletin type.
-    
-      Parameters
-      ----------
-        run_dt : python datetime object
-                 Contains yr,mon,date,hour associated with bulletin issue time
-
-  bulletin_type: string
-
-                 'nbhtx' -- hourly guidance ( hourly)
-
-                 This is required to define model forecast hour start and 
-                 end times as a well as forecast hour interval.
-                  
-      Returns
-      -------
-           pandas date/time range to be used as index as well as start/end times
-    """
-
-    fcst_hour_zero_utc = run_dt + timedelta(hours=0)
-    hr_shift = tz_shift
-    fcst_hour_zero_local = fcst_hour_zero_utc - timedelta(hours=hr_shift)
-
-    #pTime = pd.Timestamp(fcst_hour_zero_utc)
-    pTime = pd.Timestamp(fcst_hour_zero_local)
-    if bulletin_type == 'nbhtx':
-        idx = pd.date_range(pTime, periods=27, freq='H')
-    else:
-        idx = pd.date_range(pTime, periods=23, freq='3H')        
-    return idx, fcst_hour_zero_local
 
 
 def create_process_file_list(src_dir,product_list,cut_list,windows):
@@ -843,34 +729,6 @@ def ltg_plot(highlow,ltg,a):
             a.set_title('EN Intracloud')
     return
 
-
-class GridShader():
-    def __init__(self, ax, first=True, **kwargs):
-        self.spans = []
-        self.sf = first
-        self.ax = ax
-        self.kw = kwargs
-        self.ax.autoscale(False, axis="x")
-        self.cid = self.ax.callbacks.connect('xlim_changed', self.shade)
-        self.shade()
-    def clear(self):
-        for span in self.spans:
-            try:
-                span.remove()
-            except:
-                pass
-    def shade(self, evt=None):
-        self.clear()
-        xticks = self.ax.get_xticks()
-        xlim = self.ax.get_xlim()
-        xticks = xticks[(xticks > xlim[0]) & (xticks < xlim[-1])]
-        locs = np.concatenate(([[xlim[0]], xticks, [xlim[-1]]]))
-
-        start = locs[1-int(self.sf)::2]  
-        end = locs[2-int(self.sf)::2]
-
-        for s, e in zip(start, end):
-            self.spans.append(self.ax.axvspan(s, e, zorder=0, **self.kw))
 
 def plot_settings():
     SMALL_SIZE = 8

@@ -37,7 +37,6 @@ def set_paths():
     
     try:
         os.listdir('/usr')
-
         data_dir = '/data'
         scripts_dir = os.path.join(data_dir,'scripts')
         sys.path.append(os.path.join(scripts_dir,'resources'))
@@ -60,3 +59,22 @@ def set_paths():
     
     return data_dir,image_dir,archive_dir,gis_dir,py_call,placefile_dir
 
+
+def set_basic_paths():
+    
+    try:
+        os.listdir('/usr')
+        data_dir = '/data'
+        scripts_dir = os.path.join(data_dir,'scripts')
+        sys.path.append(os.path.join(scripts_dir,'resources'))
+        image_dir = os.path.join('/var/www/html','images')
+
+    except:
+        data_dir = 'C:/data'    
+        scripts_dir = os.path.join(data_dir,'scripts')
+        sys.path.append(os.path.join(scripts_dir,'resources'))
+        image_dir = os.path.join(data_dir,'images')
+
+
+    
+    return data_dir,scripts_dir,image_dir
