@@ -18,38 +18,113 @@ data_dir,scripts_dir,image_dir = set_basic_paths()
 nbm_script_dir = os.path.join(scripts_dir,'NBM')
 nbm_image_dir = os.path.join(image_dir,'NBM')
 
+basic_elements = ('UTC','TMP','TSD','DPT','SKY','WDR','WSP','WSD','GST','GSD',
+                  'PZR','PSN','PPL','PRA','VIS')
+hourly_elements = ('P01','Q01','T01','S01','I01')
+
 qpf_color = (0.1, 0.9, 0.1, 1)
 ra_color = (0, 153/255, 0, 1)
 sn_color = (0, 153/255, 204/255, 1.0)
 zr_color = (204/255,153/255,204/255, 1.0)
 pl_color = (240/255,102/255,0,1.0)
-# conditional probabilities for rain (PRA), snow (PSN), freezing rain (PZR), sleet (PPL)
-# define y axis range and yticks/ylabels for any element that's probabilistic 
+pop_color = (0.7, 0.7, 0.7, 1)
+
 prob_yticks = [0, 20, 40, 60, 80, 100]
 prob_ytick_labels = ["0","20", "40","60","80","100"]
 p_min = -5
 p_max = 105
 
-def download_nbm_bulletin(bulletin_type,download=True):
-    if bulletin_type == 'nbhtx':
-        fname = 'nbm_raw_hourly.txt'
-    elif bulletin_type == 'nbshtx':
-        fname = 'nbm_raw_short.txt'
+#         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
 
-    dst = os.path.join(nbm_script_dir,fname)    
+prods = {}
+prods['apra_ts'] = {'lw': 2, 'zord': 10, 'col': ra_color, 'title':'Prob Rain\n(%)'}
+prods['apsn_ts'] = {'lw': 2, 'zord': 10, 'col': sn_color}
+prods['apzr_ts'] = {'lw': 2, 'zord': 10, 'col': zr_color, 'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob\nFz Rain(%)'}
+prods['appl_ts'] = {'lw': 2, 'zord': 10, 'col': pl_color}
+prods['pop_ts'] = {'lw': 6, 'zord': 9, 'col': pop_color, 'title':'Precip\nChances\n(%)'}
+prods['qpf_bar'] = {'color':qpf_color, 'ymin':0.0,'ymax':0.50,
+                    'yticks':[0.0,0.1,0.2,0.3], 'ytick_labels':['0','0.1','0.2','0.3'],
+                    'title':'Precip\nAmount\n(inches)'}    
 
-    if download:
-        now = datetime.utcnow()
-        now2 = now - timedelta(hours=1)
-        ymd = now2.strftime('%Y%m%d')
-        hour = now2.strftime('%H')
-        #url = 'https://para.nomads.ncep.noaa.gov/pub/data/nccf/com/blend/para/blend.20191107/15/text/blend_nbhtx.t15z'
-        url = 'https://nomads.ncep.noaa.gov/pub/data/nccf/com/blend/prod/blend.' + ymd + '/' + hour + '/text/blend_' + bulletin_type + '.t' + hour + 'z'
-        r = requests.get(url)
-        print('downloading ... ' + str(url))
-        open(dst, 'wb').write(r.content)
+prods['acqp_bar'] = {'color':qpf_color,'ymin':0,'ymax':4.01,'bottom':0,
+         'yticks':[0,0.5,1,1.5,2,3],'ytick_labels':['0','0.5','1.0','1.5','2.0','3.0'],    
+         'title':'Rain\nAccum\n(in)' }
 
-    return dst
+    #-------------- Snow
+    
+    prods['abs_psn_bar'] = {'data': abs_prob_sn_list, 'color':sn_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels,
+         'title':'Probability\nSnow(%)'}
+
+    prods['abs_psn_ts'] = {'data': abs_prob_sn, 'color':sn_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Probability\nSnow(%)'}
+
+    prods['s01_amount_bar'] = {'data': s01_amount_list, 'color':sn_color,
+         'ymin':0.0,'ymax':1.01,'yticks':[0,0.25,0.5,0.75,1],
+         'ytick_labels':['0','1/4','1/2','3/4','1'], 'title':'Hourly\nSnow' }
+
+    prods['s01_accum_bar'] = {'data': s01_accum_list, 'color':sn_color,
+         'ymin':0,'ymax':s01_accum_ticks[-1],'bottom':0,
+         'yticks':s01_accum_ticks,'ytick_labels':s01_accum_tick_labels,    
+         'title':'Snow\nAccum\n(in)' }
+
+    prods['sn_cat_bar'] = {'data': sn_cat_list, 'color':sn_color,
+         'ymin':0,'ymax':7,'bottom':0,
+         'yticks':[0,1,2,3,4,5,6,7],'ytick_labels':['0.0','0.1','0.2','0.5','0.8','1.0','1.5','2.0'],    
+         'title':'Snow\nAmount\n(in)' }
+
+    #-------------- Freezing Rain
+
+
+    prods['i01_amount_bar'] = {'data': i01_amount_list, 'color':zr_color,
+         'ymin':0.0,'ymax':0.21,'yticks':[0.05, 0.10, 0.15, 0.20],
+         'ytick_labels':['0','.05','.10','.15',',20'], 'title':'Hourly\nIce' }
+
+    prods['i01_accum_bar'] = {'data': i01_accum_list, 'color':zr_color,
+         'ymin':0,'ymax':1.01,'bottom':0,
+         'yticks':[0,0.1,0.25,0.5,0.75,1],'ytick_labels':['0','0.1','0.25','0.5','0.75','1'],    
+         'title':'Ice\nAccum\n(in)' }
+
+    prods['zr_cat_bar'] = {'data': zr_cat_list, 'color':zr_color,
+         'ymin':0,'ymax':5,'bottom':0,
+         'major_yticks':[0,1,2,3,4,5],'major_yticks_labels':['0.01','0.03','0.05','0.10','0.25','0.5'],    
+         'title':'Ice\nAccum\n(in)' }
+
+
+
+    prods['wind'] = {'data': wspd, 'color':(0.5, 0.5, 0.5, 0.8),'ymin':0,'ymax':1,'yticks':[0.27,0.37,0.62],
+         'ytick_labels':['Gust (mph)','Speed (mph)','Wind\nDirection'],'title':''}# Wind Speed\nand Gusts\n(mph)'}
+
+    prods['t_bar'] = {'data': t_shifted_list, 'color':(255/255, 0, 0, 1.0),
+         'ymin':0,'ymax':80,'bottom':0,
+         'yticks':[30,45,62,75],'ytick_labels':['0','15','32','45'],
+         'minor_yticks':[60],'minor_yticks_labels':['30']}#,
+         #'title':'Temperature\nWind Chill\n(F)' }
+
+    prods['wc_bar'] = {'data': wind_chill_shifted_list, 'color':(0, 0, 204/255, 1.0),
+         'ymin':0,'ymax':75,'bottom':0,
+         'yticks':[30,45,62,75],'ytick_labels':['0','15','32','45'],
+         'minor_yticks':[60],'minor_yticks_labels':['30'],
+         'title':'Temperature\n(red)\n\nWind Chill\n(blue)'}
+
+    prods['time_fb_bar'] = {'data': time_to_fb_list, 'color':(0.9, 0.9, 0.2, 1.0),
+         'ymin':0.5,'ymax':4.5,'yticks':[1,2,3,4],'ytick_labels':['under 5','5','15-30','30+'],
+         'title':'Time to\nFrostbite\n(min)'}
+
+    prods['sky_bar'] = {'data': sky_list, 'color':(0.6, 0.6, 0.6, 1.0),
+         'ymin':-5,'ymax':105,'yticks':[0,25,50,75,100],
+         'ytick_labels':['0','25','50','75','100'], 'title':'Sky cover\n(%)'}
+
+    prods['vis_cat_bar'] = {'data': vis_cat_list, 'color':(150/255,150/255,245/255, 1.0),
+         'ymin':0,'ymax':6,'bottom':0,
+         'yticks':[0,1,2,3,4,5,6],'ytick_labels':['0.00','0.25','0.50','1.00','2.00','3.00',' > 6'],    
+         'title':'Visibility\n(miles)' }
+
+# conditional probabilities for rain (PRA), snow (PSN), freezing rain (PZR), sleet (PPL)
+# define y axis range and yticks/ylabels for any element that's probabilistic 
+
+
+
 
 def dtList_nbm(run_dt,bulletin_type,tz_shift):
     """
