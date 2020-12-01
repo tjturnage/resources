@@ -54,13 +54,25 @@ prods['qp_bar'] = {'color':qpf_color, 'ymin':0.0,'ymax':0.50,
 prods['apra_ts'] = {'color':ra_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
 
+prods['apra_fill_ts'] = {'color':ra_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
+
 prods['apsn_ts'] = {'color':sn_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Snow\n(%)'}
+
+prods['apsn_fill_ts'] = {'color':sn_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Snow\n(%)'}
 
 prods['pop_ts'] = {'color':(0.7, 0.7, 0.7, 1),
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Precip\n(%)'}
 
+prods['pop_fill_ts'] = {'color':(0.7, 0.7, 0.7, 1),
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Precip\n(%)'}
+
 prods['apzr_ts'] = {'color':zr_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Ice\n(%)'}
+
+prods['apzr_fill_ts'] = {'color':zr_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Ice\n(%)'}
 
 prods['acqp_bar'] = {'color':qpf_color,'ymin':0,'ymax':4.01,'bottom':0,
