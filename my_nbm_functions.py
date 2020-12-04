@@ -20,8 +20,9 @@ nbm_image_dir = os.path.join(image_dir,'NBM')
 
 basic_elements = ['UTC','TMP','TSD','DPT','SKY','WDR','WSP','WSD','GST','GSD',
                   'PZR','PSN','PPL','PRA','VIS']
-hourly_elements = ['P01','Q01','T01','S01','I01']
+hourly_elements = ['P01','Q01','T01','S01','I01','CIG','LCB']
 short_elements = ['P06','Q06','T06','S06','I06','T03']
+
 
 qpf_color = (0.1, 0.9, 0.1, 1)
 ra_color = (0, 153/255, 0, 1)
@@ -41,38 +42,38 @@ sn_accum_tick_labels = ['0', '1', '2', '4', '8']
 #         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
 
 prods = {}
-prods['apra_bar'] = {'lw': 2, 'zord': 10, 'color': ra_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob Rain\n(%)'}
-prods['apsn_bar'] = {'lw': 2, 'zord': 10, 'color': sn_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob Snow\n(%)' }
-prods['apzr_bar'] = {'lw': 2, 'zord': 10, 'color': zr_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob\nFz Rain(%)'}
-prods['appl_bar'] = {'lw': 2, 'zord': 10, 'color': pl_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob\nPL(%)'}
-prods['pop_bar'] = {'lw': 6, 'zord': 9, 'color': pop_color, 'title':'Precip\nChances\n(%)'}
+prods['apraf_bar'] = {'lw': 2, 'zord': 10, 'color': ra_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob Rain\n(%)'}
+prods['apsnf_bar'] = {'lw': 2, 'zord': 10, 'color': sn_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob Snow\n(%)' }
+prods['apzrf_bar'] = {'lw': 2, 'zord': 10, 'color': zr_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob\nFz Rain(%)'}
+prods['applf_bar'] = {'lw': 2, 'zord': 10, 'color': pl_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob\nPL(%)'}
+prods['aptsf_bar'] = {'lw': 2, 'zord': 10, 'color': pl_color, 'ymin':p_min, 'ymax':p_max, 'yticks':prob_yticks, 'ytick_labels':prob_ytick_labels, 'bottom':0, 'title':'Prob\nTS(%)'}
+prods['popf_bar'] = {'lw': 6, 'zord': 9, 'color': pop_color, 'title':'Precip\nChances\n(%)'}
 prods['qp_bar'] = {'color':qpf_color, 'ymin':0.0,'ymax':0.50,
                     'yticks':[0.0,0.1,0.2,0.3], 'ytick_labels':['0','0.1','0.2','0.3'],
                     'title':'Precip\nAmount\n(inches)'}    
 
 
-prods['apra_ts'] = {'color':ra_color,
+prods['aptsf_ts'] = {'color':ra_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Tstm\n(%)'}
+
+prods['apraf_ts'] = {'color':ra_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
 
-prods['apra_fill_ts'] = {'color':ra_color,
-         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Rain\n(%)'}
+prods['apzrf_ts'] = {'color':zr_color,
+         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Tstm\n(%)'}
 
-prods['apsn_ts'] = {'color':sn_color,
+prods['apsnf_ts'] = {'color':sn_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Snow\n(%)'}
 
-prods['apsn_fill_ts'] = {'color':sn_color,
+prods['applf_ts'] = {'color':pl_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Snow\n(%)'}
 
-prods['pop_ts'] = {'color':(0.7, 0.7, 0.7, 1),
+
+prods['popf_ts'] = {'color':(0.7, 0.7, 0.7, 1),
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Precip\n(%)'}
 
-prods['pop_fill_ts'] = {'color':(0.7, 0.7, 0.7, 1),
-         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Precip\n(%)'}
 
-prods['apzr_ts'] = {'color':zr_color,
-         'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Ice\n(%)'}
-
-prods['apzr_fill_ts'] = {'color':zr_color,
+prods['apzrf_ts'] = {'color':zr_color,
          'ymin':p_min,'ymax':p_max,'yticks':prob_yticks,'ytick_labels':prob_ytick_labels, 'title':'Prob Ice\n(%)'}
 
 prods['acqp_bar'] = {'color':qpf_color,'ymin':0,'ymax':4.01,'bottom':0,
@@ -85,6 +86,10 @@ prods['sn_bar'] = {'color':sn_color,'ymin':0.0,'ymax':1.01,'yticks':[0,0.25,0.5,
      'ytick_labels':['0','1/4','1/2','3/4','1'], 'bottom':0, 'title':'Hourly\nSnow' }
 
 prods['acsn_bar'] = {'color':sn_color,'ymin':0,'ymax':sn_accum_ticks[-1],'bottom':0,
+         'yticks':sn_accum_ticks,'ytick_labels':sn_accum_tick_labels, 'bottom':0,    
+         'title':'Snow\nAccum\n(in)' }
+
+prods['winter_bar'] = {'color':sn_color,'ymin':0,'ymax':sn_accum_ticks[-1],'bottom':0,
          'yticks':sn_accum_ticks,'ytick_labels':sn_accum_tick_labels, 'bottom':0,    
          'title':'Snow\nAccum\n(in)' }
 
@@ -418,33 +423,36 @@ def plot_settings():
     plt.rc('figure', titlesize=20)  # fontsize of the figure title
     return
 
-def synthetic_data():
-    t_list = np.arange(20,-5,-1)
-    t_shifted_list = t_list + 40
 
-    wspd_list_temp = np.arange(17,29.5,0.5)
-    wspd_arr = np.rint(wspd_list_temp)
-    wspd_list = wspd_arr.astype(int)
-    wdir_list = np.arange(140,43,-4)
-    vis_test = np.arange(10,0.1,-0.4)
-    vis_list = categorize(vis_test,'vis')
-    sn_test = np.arange(0,2.5,0.1)
-    sn_list = categorize(sn_test,'sn')
-    zr_test = np.arange(1,26,1)
-    zr_list = categorize(zr_test,'zr')
 
-    wind_chill_list = []
-    time_to_fb_list = []
-    for chill in range(0,len(wspd_list)):
-        wc = wind_chill(t_list[chill],wspd_list[chill])
-        time_to_fb = time_to_frostbite(wc)
-        wind_chill_list.append(wc)
-        time_to_fb_list.append(time_to_fb)
-    wind_chill_list = np.asarray(wind_chill_list, dtype=np.float32)
-    wc_cat = categorize(wind_chill_list,'wc')
-    wind_chill_shifted_list = wind_chill_list + 40
-    map_plot_stations[key] = {'lon':lon,'lat':lon,'wc_cat':wc_cat[0]}
-    # Temp (t) and wind chill (wc) go on same panel, 
-    # so using min(wc) and max(t) to define bounds for 'twc'
-    # using a temperature_bounds function
-    twc_tick_list,twc_tick_labels = temperature_bounds(t_shifted_list,wind_chill_shifted_list)
+
+# def synthetic_data():
+#     t_list = np.arange(20,-5,-1)
+#     t_shifted_list = t_list + 40
+
+#     wspd_list_temp = np.arange(17,29.5,0.5)
+#     wspd_arr = np.rint(wspd_list_temp)
+#     wspd_list = wspd_arr.astype(int)
+#     wdir_list = np.arange(140,43,-4)
+#     vis_test = np.arange(10,0.1,-0.4)
+#     vis_list = categorize(vis_test,'vis')
+#     sn_test = np.arange(0,2.5,0.1)
+#     sn_list = categorize(sn_test,'sn')
+#     zr_test = np.arange(1,26,1)
+#     zr_list = categorize(zr_test,'zr')
+
+#     wind_chill_list = []
+#     time_to_fb_list = []
+#     for chill in range(0,len(wspd_list)):
+#         wc = wind_chill(t_list[chill],wspd_list[chill])
+#         time_to_fb = time_to_frostbite(wc)
+#         wind_chill_list.append(wc)
+#         time_to_fb_list.append(time_to_fb)
+#     wind_chill_list = np.asarray(wind_chill_list, dtype=np.float32)
+#     wc_cat = categorize(wind_chill_list,'wc')
+#     wind_chill_shifted_list = wind_chill_list + 40
+#     map_plot_stations[key] = {'lon':lon,'lat':lon,'wc_cat':wc_cat[0]}
+#     # Temp (t) and wind chill (wc) go on same panel, 
+#     # so using min(wc) and max(t) to define bounds for 'twc'
+#     # using a temperature_bounds function
+#     twc_tick_list,twc_tick_labels = temperature_bounds(t_shifted_list,wind_chill_shifted_list)
