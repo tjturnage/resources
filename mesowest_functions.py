@@ -42,12 +42,12 @@ shortDict = {'air_temp_value_1':'t',
              'wind_gust_value_1':'wgst',
              'visibility_value_1':'vis'}
 
-stnDict2 = {'t':{'threshold':100,'color':'200 100 100','position':'-17,13, 1,'},
-          'dp':{'threshold':100,'color':'0 255 0','position':'-17,-13, 1,'},
+stnDict2 = {'t':{'threshold':300,'color':'200 100 100','position':'-17,13, 1,'},
+          'dp':{'threshold':300,'color':'0 255 0','position':'-17,-13, 1,'},
           'wspd':{'threshold':500,'color':'255 255 255','position':'NA'},
           'wdir':{'threshold':500,'color':'255 255 255','position':'NA'},
           'wgst':{'threshold':300,'color':'255 255 255','position':'NA'},
-          'vis':{'threshold':125,'color':'180 180 255','position':'17,-13, 1,'},
+          'vis':{'threshold':100,'color':'180 180 255','position':'17,-13, 1,'},
           'rt':{'threshold':125,'color':'255 255 0','position':'17,13, 1,'}}
 
    
@@ -246,7 +246,7 @@ def mesowest_get_nearest_time_data(timeStr):
     Future work - pass api_arguments to function instead of hard-wiring
 
     """
-    api_arguments = {"token":API_TOKEN,"state":"mi","network":"1,2,71,96,162,3001", "vars": varStr, "units": unitsStr, 'attime': timeStr, 'within':'30' }
+    api_arguments = {"token":API_TOKEN,"state":"ia,mn,ne,ks,wi,mo","network":"1,2,71,96,162,3001", "vars": varStr, "units": unitsStr, 'attime': timeStr, 'within':'30' }
     api_request_url = os.path.join(API_ROOT, "stations/nearesttime")
     req = requests.get(api_request_url, params=api_arguments)
     jas = req.json()
