@@ -961,6 +961,7 @@ import os
 import sys
 
 html_path = '/home/tjt/public_html'
+public_path = os.path.join(html_path,'public')
 
 def set_paths():
 
@@ -969,9 +970,9 @@ def set_paths():
         data_dir = '/data'
         scripts_dir = os.path.join(data_dir, 'scripts')
         sys.path.append(os.path.join(scripts_dir, 'resources'))
-        image_dir = os.path.join(html_path, 'images')
-        placefile_dir = os.path.join(html_path, 'placefiles')
-        archive_dir = os.path.join(image_dir, 'archive')
+        image_dir = os.path.join(public_path, 'images')
+        placefile_dir = os.path.join(public_path, 'placefiles')
+        archive_dir = os.path.join(public_path, 'archive')
         gis_dir = os.path.join(data_dir, 'GIS')
 
     except:
@@ -982,26 +983,7 @@ def set_paths():
         placefile_dir = os.path.join(data_dir, 'placefiles')
         archive_dir = os.path.join(data_dir, 'archive')
         gis_dir = os.path.join(data_dir, 'GIS')
-        py_call = None
 
 
-    return data_dir, image_dir, archive_dir, gis_dir, py_call, placefile_dir
 
-
-def set_basic_paths():
-
-    try:
-        os.listdir('/usr')
-        data_dir = '/data'
-        scripts_dir = os.path.join(data_dir, 'scripts')
-        sys.path.append(os.path.join(scripts_dir, 'resources'))
-        image_dir = os.path.join('/var/www/html', 'images')
-
-    except:
-        data_dir = 'C:/data'
-        scripts_dir = os.path.join(data_dir, 'scripts')
-        sys.path.append(os.path.join(scripts_dir, 'resources'))
-        image_dir = os.path.join(data_dir, 'images')
-
-
-    return data_dir, scripts_dir, image_dir
+    return data_dir, image_dir, archive_dir, gis_dir, placefile_dir
