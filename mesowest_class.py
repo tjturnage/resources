@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
+
 """
 
 05 Jan 2020: Now importing API_TOKEN for privacy since data are proprietary
 
              Learn more about setting up your own account at:
                  https://synopticdata.com/
-
 
 """
 
@@ -16,21 +15,27 @@ import requests
 from datetime import datetime, timedelta
 from reference_data import set_paths
 data_dir,image_dir,archive_dir,gis_dir,placefile_dir = set_paths()
+from my_functions import timeShift
+dstFile = '/home/tjt/public_html/public/placefiles/latest_surface_observations.txt'
+
 #from api_tokens import mesowest_API_TOKEN as API_TOKEN
-API_TOKEN = 'token'
+API_TOKEN = 'token'  # placeholder for testing
 API_ROOT = "https://api.synopticdata.com/v2/"
 class Mesowest():
     """
     from api_tokens import mPING_API_TOKEN
     #https://mping.ou.edu/ api/
+    event_time: string
+      used for a past event: example - '201505232330'
     """
 
-    def __init__(self,states="ia,mn,ne,ks,wi,mo",radius_str=None):
+    def __init__(self,states="ia,mn,ne,ks,wi,mo",radius_str=None,event_time=None):
 
         self.states = states
         self.radius_str=radius_str # "KLDM,100"
+        self.event_time = event_time
         self.network = "1,2,96"
-        self.varStr = 'air_temp,dew_point_temperature,wind_speed,wind_direction,wind_gust,visibility,road_temp'
+        self.varStr = 'air_temp,dew_point_temperature,wind_speed,wind_direction,wind_gust,visibility'
         self.unitsStr = 'temp|F,speed|kts,precip|in'
         self.api_args = {"token":API_TOKEN,
                         "radius":self.radius_str,
@@ -51,6 +56,10 @@ class Mesowest():
                     'wind_direction_value_1':'wdir',
                     'wind_gust_value_1':'wgst',
                     'visibility_value_1':'vis'}
+        
+        self.varList =[]
+        for keys in self.shortDict:
+            self.varList.append(str(keys))
 
         self.stnDict2 = {'t':{'threshold':300,'color':'200 100 100','position':'-17,13, 1,'},
                 'dp':{'threshold':300,'color':'0 255 0','position':'-17,-13, 1,'},
@@ -70,8 +79,6 @@ class Mesowest():
             return float(string)
         except:
             return 'NA'
-
-
 
     def mesowest_get_current_observations(self):
         """
@@ -441,4 +448,120 @@ class Mesowest():
         position = '  Text: ' + str(self.stnDict2[short]['position']) + newStr + '\n'
         textInfo = threshLine + colorLine + position
         return textInfo
+
+
+
+    def set_times(self):
+        formatT = "%Y-%m-%dT%H:%M:%SZ"
+        nowTime = datetime.utcnow()
+        nowTimeStr = datetime.strftime(nowTime,'%b %d,%Y %H:%M UTC')
+        nowTimeStr2 = datetime.strftime(nowTime,'%Y%m%d%H%M')
+
+        archive_timestr = '201505232330'
+        archive = False
+
+        if archive:
+            timeStr = archive_timestr
+        else:
+            timeStr = nowTimeStr2
+
+        dt = 15
+        self.niceTime = timeStr[0:4] + '-' + timeStr[4:6] + '-' + timeStr[6:8] + '-' + timeStr[-4:]  
+        num = 12
+        #numMin = str(dt * num)
+        placeFileName = 'latest_surface_observations.txt'
+        #self.placeTitle = 'Surface obs_' + self.niceTime + '_' + numMin + 'minutes'
+        self.placeTitle = 'Surface obs_' + self.niceTime
+
+        direction = 'backward' # 'forward'
+        self.times = timeShift(timeStr,num,dt,direction,'mesowest')
+        return
+
+    def build_placefile(self):
+        placefile = 'Title: Mesowest ' + self.placeTitle + '\nRefresh: 2\nColor: 255 200 255\n \
+        IconFile: 1, 18, 32, 2, 31, "https://mesonet.agron.iastate.edu/request/grx/windbarbs.png" \n \
+        IconFile: 2, 15, 15, 8, 8, "https://mesonet.agron.iastate.edu/request/grx/cloudcover.png"\n \
+        IconFile: 3, 25, 25, 12, 12, "https://mesonet.agron.iastate.edu/request/grx/rwis_cr.png"\n \
+        Font: 1, 14, 1, "Arial"\n\n'
+
+
+        for t in range(0,len(self.times)):
+            jas = self.mesowest_get_nearest_time_data(timeStr)
+
+            timeStr = self.times[t][0]
+            now = self.times[t][1]
+            future = self.times[t][2]
+            """
+            TimeRange: 2019-03-06T23:14:39Z 2019-03-06T23:16:29Z
+            """
+            timeText = 'TimeRange: ' + now + ' ' + future + '\n\n'
+            placefile = placefile + timeText
+                
+            for j in range(0,len(jas['STATION'])):
+                tempTxt = ''
+                lon = (jas['STATION'][j]['LONGITUDE'])
+                lat = (jas['STATION'][j]['LATITUDE'])
+                status = (jas['STATION'][j]['STATUS'])
+                tStr = 'NA'
+                dpStr = 'NA'
+                wdirStr = 'NA'
+                wspdStr = 'NA'
+                wgstStr = 'NA'
+                visStr = 'NA'
+                rtStr = 'NA'
+                if (status == 'ACTIVE'):
+                    for k in range(0,len(self.varList)):
+                        thisVar = str(self.build_placefilevarList[k])
+                        short = str(self.shortDict[thisVar])
+                        try:
+                            scratch = jas['STATION'][j]['OBSERVATIONS'][thisVar]['value']
+                            if short == 't':
+                                tStr, textInfo = self.convert_met_values(scratch,short)
+                                tTxt = tempTxt + textInfo
+                            elif short == 'dp':
+                                dpStr, textInfo = self.convert_met_values(scratch,short)
+                                dpTxt = tempTxt + textInfo
+                            elif short == 'rt':
+                                rtStr, textInfo = self.convert_met_values(scratch,short)
+                                rtTxt = tempTxt + textInfo
+                            elif short == 'vis':
+                                visStr, textInfo = self.convert_met_values(scratch,short)
+                                visTxt = tempTxt + textInfo
+                            elif short == 'wspd':
+                                wspdStr, val = self.convert_met_values(scratch,short)
+                            elif short == 'wdir':
+                                wdirStr, val = self.convert_met_values(scratch,short)                    
+                            elif short == 'wgst':
+                                wgstStr, textInfo = self.convert_met_values(scratch,short)
+                                wgstTxt = tempTxt + textInfo                
+                        except:
+                            pass
+
+                objHead = 'Object: '  + lat + ',' + lon + '\n'     
+
+                if wdirStr != 'NA' and wspdStr != 'NA':
+                    windTxt = objHead + '  Threshold: 500\n  Icon: 0,0,' + wdirStr + ',1,' + wspdStr + '\n End:\n\n'
+                    placefile = placefile + windTxt
+
+                if tStr != 'NA' and dpStr != 'NA':
+                    placefile = placefile + objHead + tTxt + dpTxt + ' End:\n\n'
+                elif tStr != 'NA':
+                    placefile = placefile + objHead + tTxt + ' End:\n\n'
+                elif dpStr != 'NA':
+                    placefile = placefile + objHead + dpTxt + ' End:\n\n'
+                            
+                if wgstStr != 'NA' and wdirStr != 'NA':
+                    wgstText = self.gustObj(wdirStr, int(wgstStr), 'wgst')
+                    wgstTxt = objHead + wgstText + ' End:\n\n'
+                    placefile = placefile + wgstTxt
+                if visStr != 'NA':
+                    vsbyTxt = objHead + visTxt + ' End:\n\n'
+                    placefile = placefile + vsbyTxt
+                if rtStr != 'NA':
+                    rtTxt = objHead + rtTxt + ' End:\n\n'
+                    placefile = placefile + rtTxt
+
+            with open(dstFile, 'w') as outfile:
+                outfile.write(placefile)
+
 
