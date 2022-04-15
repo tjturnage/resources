@@ -173,14 +173,11 @@ class Mesowest():
                             
                 if wgstStr != 'NA' and wdirStr != 'NA':
                     wgstText = self.gustObj(wdirStr, int(wgstStr), 'wgst')
-                    wgstTxt = objHead + wgstText + ' End:\n\n'
-                    self.placefile = self.placefile + wgstTxt
+                    self.placefile += f'{objHead}{wgstText} End:\n\n'
                 if visStr != 'NA':
-                    vsbyTxt = objHead + visTxt + ' End:\n\n'
-                    self.placefile = self.placefile + vsbyTxt
+                    self.placefile += f'{objHead}{visTxt} End:\n\n'
                 if rtStr != 'NA':
-                    rtTxt = objHead + rtTxt + ' End:\n\n'
-                    self.placefile = self.placefile + rtTxt
+                    self.placefile += f'{objHead}{rtTxt} End:\n\n'
 
         with open(dstFile, 'w') as outfile:
             outfile.write(self.placefile)
