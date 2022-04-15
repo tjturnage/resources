@@ -10,3 +10,6 @@ for t in range(1,num):
     print(newTime)
 
 
+string1 = 'hi'
+string1 += 'there'
+print(string1)

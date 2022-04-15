@@ -117,8 +117,7 @@ class Mesowest():
             """
             #timeText = 'TimeRange: ' + now + ' ' + future + '\n\n'
             timeText = f'TimeRange: {now} {future}\n\n'
-            self.placefile = self.placefile + timeText
-                
+            self.placefile += timeText                
             for j in range(0,len(jas['STATION'])):
                 tempTxt = ''
                 lon = (jas['STATION'][j]['LONGITUDE'])
@@ -162,15 +161,15 @@ class Mesowest():
                 objHead = 'Object: '  + lat + ',' + lon + '\n'     
 
                 if wdirStr != 'NA' and wspdStr != 'NA':
-                    windTxt = objHead + '  Threshold: 500\n  Icon: 0,0,' + wdirStr + ',1,' + wspdStr + '\n End:\n\n'
-                    self.placefile = self.placefile + windTxt
+                    windTxt = f'{objHead}  Threshold: {self.wind_zoom}\n  Icon: 0,0,{wdirStr},1,{wspdStr}\n End:\n\n'
+                    self.placefile += windTxt
 
                 if tStr != 'NA' and dpStr != 'NA':
-                    self.placefile = self.placefile + objHead + tTxt + dpTxt + ' End:\n\n'
+                    self.placefile += f'{objHead}{tTxt}{dpTxt} End:\n\n'
                 elif tStr != 'NA':
-                    self.placefile = self.placefile + objHead + tTxt + ' End:\n\n'
+                    self.placefile += f'{objHead}{tTxt} End:\n\n'
                 elif dpStr != 'NA':
-                    self.placefile = self.placefile + objHead + dpTxt + ' End:\n\n'
+                    self.placefile += f'{objHead}{dpTxt} End:\n\n'
                             
                 if wgstStr != 'NA' and wdirStr != 'NA':
                     wgstText = self.gustObj(wdirStr, int(wgstStr), 'wgst')
