@@ -43,22 +43,22 @@ class Mesowest():
                 self.api_args['state'] = self.states
             else:
                 print("Need a radius or state argument!!")
-                return
+        
 
-    self.shortDict = {'air_temp_value_1':'t',
-                'dew_point_temperature_value_1d':'dp',
-                'wind_speed_value_1':'wspd',
-                'wind_direction_value_1':'wdir',
-                'wind_gust_value_1':'wgst',
-                'visibility_value_1':'vis'}
+        self.shortDict = {'air_temp_value_1':'t',
+                    'dew_point_temperature_value_1d':'dp',
+                    'wind_speed_value_1':'wspd',
+                    'wind_direction_value_1':'wdir',
+                    'wind_gust_value_1':'wgst',
+                    'visibility_value_1':'vis'}
 
-    self.stnDict2 = {'t':{'threshold':300,'color':'200 100 100','position':'-17,13, 1,'},
-            'dp':{'threshold':300,'color':'0 255 0','position':'-17,-13, 1,'},
-            'wspd':{'threshold':500,'color':'255 255 255','position':'NA'},
-            'wdir':{'threshold':500,'color':'255 255 255','position':'NA'},
-            'wgst':{'threshold':300,'color':'255 255 255','position':'NA'},
-            'vis':{'threshold':100,'color':'180 180 255','position':'17,-13, 1,'},
-            'rt':{'threshold':125,'color':'255 255 0','position':'17,13, 1,'}}
+        self.stnDict2 = {'t':{'threshold':300,'color':'200 100 100','position':'-17,13, 1,'},
+                'dp':{'threshold':300,'color':'0 255 0','position':'-17,-13, 1,'},
+                'wspd':{'threshold':500,'color':'255 255 255','position':'NA'},
+                'wdir':{'threshold':500,'color':'255 255 255','position':'NA'},
+                'wgst':{'threshold':300,'color':'255 255 255','position':'NA'},
+                'vis':{'threshold':100,'color':'180 180 255','position':'17,-13, 1,'},
+                'rt':{'threshold':125,'color':'255 255 0','position':'17,13, 1,'}}
 
    
     def str_to_fl(self,string):
@@ -222,13 +222,13 @@ class Mesowest():
             new_data_max = new_data[new_data.index == new_data.index.max()]
             index_time = pd_time.strftime('%Y%m%d%H%M')
             ob_time = new_data_max.index[0].strftime('%Y%m%d%H%M')
-            lat = float(new_data_max.lat.values[-1])
-            lon = float(new_data_max.lon.values[-1])
-            t = float(new_data_max.temp.values[-1])    
-            dp = float(new_data_max.dewpoint.values[-1])
-            wdir = float(new_data_max.wdir.values[-1])   
-            wspd = float(new_data_max.wspd.values[-1])
-            wgst = float(new_data_max.wgst.values[-1])
+            lat = self.str_to_fl(new_data_max.lat.values[-1])
+            lon = self.str_to_fl(new_data_max.lon.values[-1])
+            t = self.str_to_fl(new_data_max.temp.values[-1])    
+            dp = self.str_to_fl(new_data_max.dewpoint.values[-1])
+            wdir = self.str_to_fl(new_data_max.wdir.values[-1])   
+            wspd = self.str_to_fl(new_data_max.wspd.values[-1])
+            wgst = self.str_to_fl(new_data_max.wgst.values[-1])
             #data_path = new_data.file_path.max()
             stn_data = [station,index_time,ob_time,lat,lon,t,dp,wdir,wspd,wgst]
             if 'NA' not in (t,dp,wdir,wspd):
