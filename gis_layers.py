@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Last updated: 02Feb2020
               added documentation
@@ -19,7 +18,7 @@ except:
 
 from reference_data import set_paths
 
-data_dir,image_dir,archive_dir,gis_dir,py_call,placefile_dir = set_paths()
+data_dir,image_dir,archive_dir,gis_dir,placefile_dir = set_paths()
 
 
 # please see documentation in resources/case_data.py for additional information
@@ -70,7 +69,7 @@ shapeDict['20190720_points'] = {'type':'surveys','shape_dir':'survey_20190720','
 shapeDict['20190704_survey'] = {'type':'surveys','shape_dir':'survey_20190704','file':'extractDamagePaths.shp'}
 shapeDict['20190911_survey'] = {'type':'surveys','shape_dir':'survey_20190911','file':'manual_swath.shp'}
 shapeDict['20080608_survey'] = {'type':'surveys','shape_dir':'survey_20080608','file':'lansing.shp'}
-
+shapeDict['20220520_survey'] = {'type':'surveys','shape_dir':'survey_20220520','file':'nws_dat_damage_paths.shp'}
 shapeDict['Lake_MI_counties'] = {'type':county_dir,'shape_dir':'Lake_MI_counties','file':'Lake_MI_counties.shp'}
 
 shapelist = ['MI']
