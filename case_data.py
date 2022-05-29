@@ -460,12 +460,28 @@ cases['20220520_KAPX'] = {'date':'20220520',
      'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
      }	
 
-
+cases['20150622_KGRR'] = {'date':'20150622',
+     'rda':'KGRR',
+     'lonmin':-85.4,
+     'lonmax':-84.85,
+     'latmax':45.2,
+     'latmin':44.75,
+     'sat_extent' : [-86.25,-84.75,42.0,43.25],
+     'pandas' : ('2019-10-20 22:30', 42, '5min'),
+     'start_latlon': (42.90,-85.27),
+     'end_latlon': (42.87,-84.75),
+     'start_time': '2015-06-22 18:07:22',
+     'end_time': '2015-06-22 18:49:18',
+     'feature_follow': True,
+     'cutlist': ['00.50','00.90','01.30','01.80','02.40','03.10'],
+     'storm_motion': (284,43),
+     'shapelist':['Lake_MI_counties','20190720_paths','20190720_points']
+     }	
 
 
 this_case = cases['20180719_comet']
 this_case = cases['20080608_KDTX']
 this_case = cases['20220520_KAPX']
-
+this_case = cases['20150622_KGRR']
 #this_case['products'] = ['AzShear_Storm','DivShear_Storm','ReflectivityQC','Velocity','SpectrumWidth', 'RhoHV']
 #this_case['cutlist'] =  ['00.90','01.30','01.80']
